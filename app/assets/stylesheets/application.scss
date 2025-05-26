@@ -1,1 +1,5 @@
+// Suprimir avisos de depreciação do Sass
+$color-function-deprecation-warnings: false;
+
 @import "bootstrap";
+@import "home";
