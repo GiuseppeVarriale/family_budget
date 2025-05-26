@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
 
-  def Index
-
+  def index
+    # Ação que renderiza a página inicial
   end
 end

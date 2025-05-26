@@ -13,6 +13,39 @@
 # it.
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+# Configure SimpleCov for test coverage reporting
+if ENV['COVERAGE'] == 'true'
+  require 'simplecov'
+  require 'simplecov-badge'
+
+  SimpleCov.start 'rails' do
+    add_filter '/bin/'
+    add_filter '/db/'
+    add_filter '/spec/'
+    add_filter '/test/'
+    add_filter '/vendor/'
+    add_filter '/config/'
+    
+    # Configurações de formatação
+    SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
+      SimpleCov::Formatter::HTMLFormatter,
+      SimpleCovBadge::Formatter
+    ])
+    
+    # Definição dos grupos
+    add_group 'Controllers', 'app/controllers'
+    add_group 'Models', 'app/models'
+    add_group 'Helpers', 'app/helpers'
+    add_group 'Views', 'app/views'
+    add_group 'Mailers', 'app/mailers'
+    add_group 'Jobs', 'app/jobs'
+    
+    # Configuração mínima de cobertura
+    minimum_coverage 80
+  end
+end
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
