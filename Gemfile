@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem 'rails', '~> 7.2.2', '>= 7.2.2.1'
 gem 'devise'
+gem 'rails', '~> 7.2.2', '>= 7.2.2.1'
 
 gem 'devise-i18n'
 
@@ -61,9 +61,6 @@ group :development, :test do
 
   # Test data generator with factories
   gem 'factory_bot_rails'
-
-  # Legacy factory library (deprecated, use factory_bot instead)
-  gem 'factory_girl_rails'
 
   # Generate fake data for tests and seeds
   gem 'faker'
