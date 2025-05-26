@@ -196,6 +196,9 @@ GEM
       i18n
     globalid (1.2.1)
       activesupport (>= 6.1)
+    google-protobuf (4.27.5-x86_64-linux)
+      bigdecimal
+      rake (>= 13)
     guard (2.19.1)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -298,6 +301,11 @@ GEM
       ast (~> 2.4.1)
       racc
     path_expander (1.1.3)
+    pg (1.5.8)
+    pg_query (5.1.0)
+      google-protobuf (>= 3.22.3)
+    pghero (3.6.0)
+      activerecord (>= 6.1)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -581,6 +589,9 @@ DEPENDENCIES
   jbuilder
   launchy
   parallel_tests
+  pg
+  pg_query
+  pghero
   pry-byebug
   puma (>= 5.0)
   rails (~> 7.2.2, >= 7.2.2.1)

@@ -77,6 +77,12 @@ group :development, :test do
   # Run tests in parallel
   gem 'parallel_tests'
 
+  # PostgreSQL database adapter for Ruby
+  gem 'pg'
+  # PostgreSQL performance dashboard and insights
+  gem 'pghero'
+  # PostgreSQL query parsing and normalization library
+  gem 'pg_query'
   # Combine pry with byebug
   gem 'pry-byebug'
 
