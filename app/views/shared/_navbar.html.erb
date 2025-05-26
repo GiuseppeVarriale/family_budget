@@ -1,0 +1,61 @@
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <i class="bi bi-wallet2 me-2"></i>
+      Family Budget
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <%= link_to "Home", root_path, class: "nav-link #{current_page?(root_path) ? 'active' : ''}" %>
+        </li>
+        <% if user_signed_in? %>
+          <li class="nav-item">
+            <%= link_to "Dashboard", "#", class: "nav-link" %>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Finanças
+            </a>
+            <ul class="dropdown-menu">
+              <li><%= link_to "Receitas", "#", class: "dropdown-item" %></li>
+              <li><%= link_to "Despesas", "#", class: "dropdown-item" %></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><%= link_to "Relatórios", "#", class: "dropdown-item" %></li>
+            </ul>
+          </li>
+        <% end %>
+        <li class="nav-item">
+          <%= link_to "Sobre", "#", class: "nav-link" %>
+        </li>
+      </ul>
+      <div class="d-flex">
+        <% if user_signed_in? %>
+          <div class="dropdown">
+            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-1"></i>
+              <%= current_user.email.split('@').first %>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><%= link_to "Meu Perfil", edit_user_registration_path, class: "dropdown-item" %></li>
+              <li><%= link_to "Configurações", "#", class: "dropdown-item" %></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <%= button_to destroy_user_session_path, method: :delete, class: "dropdown-item text-danger" do %>
+                  <i class="bi bi-box-arrow-right me-1"></i> Sair
+                <% end %>
+              </li>
+            </ul>
+          </div>
+        <% else %>
+          <%= link_to "Entrar", new_user_session_path, class: "btn btn-outline-light me-2" %>
+          <%= link_to "Cadastrar", new_user_registration_path, class: "btn btn-light" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</nav>
+

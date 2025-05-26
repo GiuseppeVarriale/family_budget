@@ -1,12 +1,61 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Página Inicial - Family Budget</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <h1>Bem-vindo ao Family Budget</h1>
-    <p>Gerencie seu orçamento familiar de forma simples e eficiente.</p>
-</body>
-</html>
+<% content_for :title, "Family Budget - Gerencie suas finanças com facilidade" %>
+
+<div class="home-container">
+  <div class="content-card">
+    <div class="card-header">
+      <h1 class="display-4">Bem-vindo ao Family Budget</h1>
+      <p class="lead">Gerencie seu orçamento familiar de forma simples e eficiente</p>
+    </div>
+
+    <div class="card-body">
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="feature-box">
+            <div class="feature-icon">
+              <i class="bi bi-graph-up"></i>
+            </div>
+            <h3>Acompanhamento</h3>
+            <p>Visualize suas despesas e receitas mensais em gráficos intuitivos.</p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="feature-box">
+            <div class="feature-icon">
+              <i class="bi bi-piggy-bank"></i>
+            </div>
+            <h3>Economize</h3>
+            <p>Defina metas de economia e acompanhe seu progresso em tempo real.</p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="feature-box">
+            <div class="feature-icon">
+              <i class="bi bi-calendar-check"></i>
+            </div>
+            <h3>Planejamento</h3>
+            <p>Crie orçamentos mensais e planeje suas finanças com antecedência.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="text-center">
+            <p class="lead">O Family Budget é a solução completa para o gerenciamento financeiro da sua família. Com ferramentas intuitivas e recursos avançados, você terá total controle sobre suas finanças.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <% if user_signed_in? %>
+        <%= link_to "Ir para Dashboard", "#", class: "btn btn-primary btn-lg" %>
+      <% else %>
+        <%= link_to "Começar Agora", new_user_registration_path, class: "btn btn-primary btn-lg" %>
+        <p class="mt-3">Já tem uma conta? <%= link_to "Faça login", new_user_session_path %></p>
+      <% end %>
+    </div>
+  </div>
+</div>
