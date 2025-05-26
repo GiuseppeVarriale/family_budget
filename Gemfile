@@ -1,11 +1,15 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem 'devise'
 gem 'rails', '~> 7.2.2', '>= 7.2.2.1'
 
+gem 'bootstrap', '~> 5.3.1'
+
+gem 'dartsass-sprockets'
 gem 'devise-i18n'
 
+gem 'devise'
+gem 'jquery-rails'
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
 
@@ -77,11 +81,8 @@ group :development, :test do
   # Run tests in parallel
   gem 'parallel_tests'
 
-  # PostgreSQL database adapter for Ruby
   gem 'pg'
-  # PostgreSQL performance dashboard and insights
   gem 'pghero'
-  # PostgreSQL query parsing and normalization library
   gem 'pg_query'
   # Combine pry with byebug
   gem 'pry-byebug'
