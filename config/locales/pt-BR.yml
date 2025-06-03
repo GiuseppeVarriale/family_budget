@@ -14,6 +14,13 @@ pt-BR:
         password_confirmation: Confirme a senha
         current_password: Senha atual
     errors:
+      messages:
+        record_invalid: "Registro inválido"
+        blank: não pode ficar em branco
+        taken: já está em uso
+        invalid: não é válido
+        too_short: é muito curta (mínimo de %{count} caracteres)
+        confirmation: não confere com a senha
       models:
         profile:
           attributes:
@@ -35,9 +42,23 @@ pt-BR:
             current_password:
               blank: não pode ficar em branco
               invalid: está incorreta
-  
+
   helpers:
     submit:
       profile:
         create: Criar perfil
         update: Atualizar perfil
+
+  profiles:
+    update:
+      success: Perfil atualizado com sucesso.
+    edit:
+      title: Meu Perfil
+      avatar_label: Foto de Perfil
+      avatar_help: Escolha uma imagem para seu perfil (opcional).
+
+  flash:
+    profiles:
+      update:
+        notice: Perfil atualizado com sucesso.
+      submit: Atualizar Perfil
