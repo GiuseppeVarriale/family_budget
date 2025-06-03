@@ -1,0 +1,43 @@
+pt-BR:
+  activerecord:
+    models:
+      profile: Perfil
+      user: Usuário
+    attributes:
+      profile:
+        first_name: Nome
+        last_name: Sobrenome
+        avatar: Foto de perfil
+      user:
+        email: E-mail
+        password: Senha
+        password_confirmation: Confirme a senha
+        current_password: Senha atual
+    errors:
+      models:
+        profile:
+          attributes:
+            first_name:
+              blank: não pode ficar em branco
+            last_name:
+              blank: não pode ficar em branco
+        user:
+          attributes:
+            email:
+              blank: não pode ficar em branco
+              taken: já está em uso
+              invalid: não é válido
+            password:
+              blank: não pode ficar em branco
+              too_short: é muito curta (mínimo de %{count} caracteres)
+            password_confirmation:
+              confirmation: não confere com a senha
+            current_password:
+              blank: não pode ficar em branco
+              invalid: está incorreta
+  
+  helpers:
+    submit:
+      profile:
+        create: Criar perfil
+        update: Atualizar perfil

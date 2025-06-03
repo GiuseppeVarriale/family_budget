@@ -10,12 +10,22 @@
           <%= f.fields_for :profile, resource.build_profile do |profile_form| %>
             <div class="row mb-3">
               <div class="col-md-6">
-                <%= profile_form.label :first_name, "Nome", class: "form-label" %>
-                <%= profile_form.text_field :first_name, class: "form-control", placeholder: "Seu nome" %>
+                <%= profile_form.label :first_name, class: "form-label required" %>
+                <%= profile_form.text_field :first_name, class: "form-control #{resource.errors[:'profile.first_name'].any? ? 'is-invalid' : ''}", placeholder: "Seu nome", required: true %>
+                <% if resource.errors[:'profile.first_name'].any? %>
+                  <div class="invalid-feedback">
+                    <%= resource.errors[:'profile.first_name'].join(', ') %>
+                  </div>
+                <% end %>
               </div>
               <div class="col-md-6">
-                <%= profile_form.label :last_name, "Sobrenome", class: "form-label" %>
-                <%= profile_form.text_field :last_name, class: "form-control", placeholder: "Seu sobrenome" %>
+                <%= profile_form.label :last_name, class: "form-label required" %>
+                <%= profile_form.text_field :last_name, class: "form-control #{resource.errors[:'profile.last_name'].any? ? 'is-invalid' : ''}", placeholder: "Seu sobrenome", required: true %>
+                <% if resource.errors[:'profile.last_name'].any? %>
+                  <div class="invalid-feedback">
+                    <%= resource.errors[:'profile.last_name'].join(', ') %>
+                  </div>
+                <% end %>
               </div>
             </div>
 
@@ -27,21 +37,36 @@
           <% end %>
 
           <div class="mb-3">
-            <%= f.label :email, "E-mail", class: "form-label" %>
-            <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: "exemplo@email.com" %>
+            <%= f.label :email, "E-mail", class: "form-label required" %>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control #{resource.errors[:email].any? ? 'is-invalid' : ''}", placeholder: "exemplo@email.com", required: true %>
+            <% if resource.errors[:email].any? %>
+              <div class="invalid-feedback">
+                <%= resource.errors[:email].join(', ') %>
+              </div>
+            <% end %>
           </div>
 
           <div class="mb-3">
-            <%= f.label :password, "Senha", class: "form-label" %>
+            <%= f.label :password, "Senha", class: "form-label required" %>
             <% if @minimum_password_length %>
             <em>(<%= @minimum_password_length %> caracteres no mínimo)</em>
             <% end %>
-            <%= f.password_field :password, autocomplete: "new-password", class: "form-control" %>
+            <%= f.password_field :password, autocomplete: "new-password", class: "form-control #{resource.errors[:password].any? ? 'is-invalid' : ''}", required: true, minlength: 6 %>
+            <% if resource.errors[:password].any? %>
+              <div class="invalid-feedback">
+                <%= resource.errors[:password].join(', ') %>
+              </div>
+            <% end %>
           </div>
 
           <div class="mb-3">
-            <%= f.label :password_confirmation, "Confirme a senha", class: "form-label" %>
-            <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
+            <%= f.label :password_confirmation, "Confirme a senha", class: "form-label required" %>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control #{resource.errors[:password_confirmation].any? ? 'is-invalid' : ''}", required: true, minlength: 6 %>
+            <% if resource.errors[:password_confirmation].any? %>
+              <div class="invalid-feedback">
+                <%= resource.errors[:password_confirmation].join(', ') %>
+              </div>
+            <% end %>
           </div>
 
           <div class="d-grid gap-2">
