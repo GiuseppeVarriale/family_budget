@@ -1,29 +1,58 @@
-<h2>Sign up</h2>
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="text-center mb-4">Cadastre-se</h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { multipart: true }) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+          <%= f.fields_for :profile, resource.build_profile do |profile_form| %>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <%= profile_form.label :first_name, "Nome", class: "form-label" %>
+                <%= profile_form.text_field :first_name, class: "form-control", placeholder: "Seu nome" %>
+              </div>
+              <div class="col-md-6">
+                <%= profile_form.label :last_name, "Sobrenome", class: "form-label" %>
+                <%= profile_form.text_field :last_name, class: "form-control", placeholder: "Seu sobrenome" %>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <%= profile_form.label :avatar, "Foto de Perfil", class: "form-label" %>
+              <%= profile_form.file_field :avatar, class: "form-control", accept: "image/*" %>
+              <div class="form-text">Escolha uma imagem para seu perfil (opcional).</div>
+            </div>
+          <% end %>
+
+          <div class="mb-3">
+            <%= f.label :email, "E-mail", class: "form-label" %>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: "exemplo@email.com" %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :password, "Senha", class: "form-label" %>
+            <% if @minimum_password_length %>
+            <em>(<%= @minimum_password_length %> caracteres no mínimo)</em>
+            <% end %>
+            <%= f.password_field :password, autocomplete: "new-password", class: "form-control" %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :password_confirmation, "Confirme a senha", class: "form-label" %>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
+          </div>
+
+          <div class="d-grid gap-2">
+            <%= f.submit "Cadastrar", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+
+        <div class="mt-3 text-center">
+          <%= render "devise/shared/links" %>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>
