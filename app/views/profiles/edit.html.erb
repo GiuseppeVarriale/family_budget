@@ -16,6 +16,8 @@
           </div>
 
           <%= form_with(model: @profile, url: profile_path, method: :patch, local: true, html: { multipart: true }) do |f| %>
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
             <% if @profile.errors.any? %>
               <div class="alert alert-danger">
                 <h2><%= pluralize(@profile.errors.count, "erro") %> impediram que este perfil fosse salvo:</h2>

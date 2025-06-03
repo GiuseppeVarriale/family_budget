@@ -1,6 +1,6 @@
 RSpec.configure do |config|
   # Configuração personalizada para saída de testes
-  config.example_status_persistence_file_path = "./spec/examples.txt"
+  config.example_status_persistence_file_path = './spec/examples.txt'
 
   # Exibe a saída em cores
   config.color_mode = :on
@@ -13,11 +13,11 @@ RSpec.configure do |config|
 
   # Configura para mostrar mensagens de falha com o caminho do arquivo
   config.backtrace_exclusion_patterns = [
-    /\/lib\d*\/ruby\//,
-    /bin\//,
+    %r{/lib\d*/ruby/},
+    %r{bin/},
     /gems/,
-    /spec\/spec_helper\.rb/,
-    /lib\/rspec\/(core|expectations|matchers|mocks)/
+    %r{spec/spec_helper\.rb},
+    %r{lib/rspec/(core|expectations|matchers|mocks)}
   ]
 
   # Define mensagens de falha mais informativas

@@ -16,10 +16,6 @@ module ProfilesHelper
   def profile_display_name(profile)
     return 'Usuário' unless profile
 
-    if profile.first_name.present? || profile.last_name.present?
-      profile.full_name
-    else
-      'Usuário'
-    end
+    [profile.first_name, profile.last_name].compact.map(&:strip).join(' ')
   end
 end

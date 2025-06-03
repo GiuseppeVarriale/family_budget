@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  describe 'associations' do
+    it { should have_one(:profile).dependent(:destroy) }
+    it { should accept_nested_attributes_for(:profile) }
+  end
+
   describe 'validations' do
     it 'is valid with valid attributes' do
       user = build(:user)
@@ -53,6 +58,18 @@ RSpec.describe User, type: :model do
       expect(User.devise_modules).to include(:recoverable)
       expect(User.devise_modules).to include(:rememberable)
       expect(User.devise_modules).to include(:validatable)
+    end
+  end
+
+  describe 'profile dependency' do
+    it 'destroys associated profile when user is destroyed' do
+      user = create(:user)
+      user.profile # Garante que o perfil seja acessado
+      profile = user.profile
+      profile_id = profile.id
+
+      user.destroy
+      expect { Profile.find(profile_id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end

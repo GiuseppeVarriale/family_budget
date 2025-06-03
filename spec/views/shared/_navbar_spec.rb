@@ -34,7 +34,7 @@ RSpec.describe 'shared/_navbar', type: :view do
   end
 
   context 'when user is signed in' do
-    let(:user) { instance_double('User', email: 'test@example.com') }
+    let(:user) { create(:user, email: 'test@example.com') }
 
     before do
       allow(view).to receive(:user_signed_in?).and_return(true)
@@ -57,7 +57,7 @@ RSpec.describe 'shared/_navbar', type: :view do
     end
 
     it 'displays user profile dropdown' do
-      expect(rendered).to have_content('test')  # Username from email
+      expect(rendered).to have_content(user.profile.first_name)
     end
 
     it 'displays user profile dropdown items' do

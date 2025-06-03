@@ -120,6 +120,9 @@ group :development, :test do
   # Rubocop extension with Shopify's Ruby style guide
   gem 'rubocop-shopify'
 
+  # Shoulda matchers for testing
+  gem 'shoulda-matchers'
+
   # Static code analyzer with quality reports
   gem 'rubycritic'
 
