@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :family do
-    name { "MyString" }
-    description { "MyText" }
+    name { 'Família Silva' }
+    description { 'Uma família feliz' }
+    association :user
   end
 end
