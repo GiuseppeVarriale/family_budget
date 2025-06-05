@@ -1,0 +1,81 @@
+<% content_for :title, "Minha Família" %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+          <i class="bi bi-people-fill me-2"></i>
+          <%= @family.name %>
+        </h2>
+        <div>
+          <%= link_to "Editar", edit_family_path, class: "btn btn-outline-primary me-2" %>
+          <%= link_to "Excluir", family_path, method: :delete,
+                      class: "btn btn-outline-danger",
+                      confirm: "Tem certeza que deseja excluir esta família? Esta ação não pode ser desfeita." %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0">Informações da Família</h5>
+        </div>
+        <div class="card-body">
+          <dl class="row">
+            <dt class="col-sm-3">Nome:</dt>
+            <dd class="col-sm-9"><%= @family.name %></dd>
+            <% if @family.description.present? %>
+              <dt class="col-sm-3">Descrição:</dt>
+              <dd class="col-sm-9"><%= @family.description %></dd>
+            <% end %>
+            <dt class="col-sm-3">Criada em:</dt>
+            <dd class="col-sm-9"><%= @family.created_at.strftime("%d/%m/%Y às %H:%M") %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0">Estatísticas</h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6">
+              <div class="border-end">
+                <h4 class="text-primary mb-1">1</h4>
+                <small class="text-muted">Membros</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <h4 class="text-success mb-1">0</h4>
+              <small class="text-muted">Transações</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-sm mt-3">
+        <div class="card-header">
+          <h5 class="mb-0">Administrador</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+              <i class="bi bi-person-fill text-white"></i>
+            </div>
+            <div>
+              <h6 class="mb-0"><%= current_user.email.split('@').first.capitalize %></h6>
+              <small class="text-muted"><%= current_user.email %></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
