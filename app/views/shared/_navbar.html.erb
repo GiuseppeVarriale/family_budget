@@ -27,10 +27,14 @@
               <li><%= link_to "Relatórios", "#", class: "dropdown-item" %></li>
             </ul>
           </li>
+          <li class="nav-item">
+            <% if current_user.family.present? %>
+              <%= link_to "Gerenciar Família", family_path, class: "nav-link" %>
+            <% else %>
+              <%= link_to "Criar Família", new_family_path, class: "nav-link" %>
+            <% end %>
+          </li>
         <% end %>
-        <li class="nav-item">
-          <%= link_to "Sobre", "#", class: "nav-link" %>
-        </li>
       </ul>
       <div class="d-flex">
         <% if user_signed_in? %>
