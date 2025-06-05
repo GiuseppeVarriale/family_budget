@@ -35,13 +35,19 @@
       <div class="d-flex">
         <% if user_signed_in? %>
           <div class="dropdown">
-            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle me-1"></i>
-              <%= current_user.email.split('@').first %>
+            <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <% if current_user.profile&.avatar&.attached? %>
+                <%= image_tag current_user.profile.avatar, class: "rounded-circle me-2", style: "width: 30px; height: 30px; object-fit: cover;" %>
+              <% else %>
+                <div class="rounded-circle bg-light text-primary d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px;">
+                  <span style="font-size: 14px;"><%= current_user.profile&.first_name.to_s.first&.upcase || current_user.email.first.upcase %></span>
+                </div>
+              <% end %>
+              <%= current_user.profile&.first_name || current_user.email.split('@').first %>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><%= link_to "Meu Perfil", edit_user_registration_path, class: "dropdown-item" %></li>
-              <li><%= link_to "Configurações", "#", class: "dropdown-item" %></li>
+              <li><%= link_to "Meu Perfil", edit_profile_path, class: "dropdown-item" %></li>
+              <li><%= link_to "Configurações da Conta", edit_user_registration_path, class: "dropdown-item" %></li>
               <li><hr class="dropdown-divider"></li>
               <li>
                 <%= button_to destroy_user_session_path, method: :delete, class: "dropdown-item text-danger" do %>

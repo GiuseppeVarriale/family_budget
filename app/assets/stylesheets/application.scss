@@ -3,3 +3,78 @@ $color-function-deprecation-warnings: false;
 
 @import "bootstrap";
 @import "home";
+
+// Estilos personalizados da aplicação
+
+// Estilo para campos obrigatórios
+.form-label.required:after {
+  content: " *";
+  color: $danger;
+  font-weight: bold;
+}
+
+// Highlight para campos com erro
+.is-invalid {
+  border-color: $danger;
+  &:focus {
+    box-shadow: 0 0 0 0.25rem rgba($danger, 0.25);
+  }
+}
+
+// Estilos para o avatar do perfil
+.avatar-preview {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: $primary;
+    box-shadow: 0 0 10px rgba($primary, 0.5);
+  }
+}
+
+.avatar-placeholder {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  background-color: #e0e0e0;
+  color: #757575;
+  font-size: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: #d0d0d0;
+  }
+}
+
+// Melhorias nos formulários
+.card {
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.form-control:focus {
+  border-color: $primary;
+  box-shadow: 0 0 0 0.25rem rgba($primary, 0.25);
+}
+
+.btn-primary {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}

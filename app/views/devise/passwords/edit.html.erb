@@ -1,25 +1,45 @@
-<h2>Change your password</h2>
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="text-center mb-4">Alterar sua senha</h2>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-  <%= f.hidden_field :reset_password_token %>
+        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
+          <%= f.hidden_field :reset_password_token %>
 
-  <div class="field">
-    <%= f.label :password, "New password" %><br />
-    <% if @minimum_password_length %>
-      <em>(<%= @minimum_password_length %> characters minimum)</em><br />
-    <% end %>
-    <%= f.password_field :password, autofocus: true, autocomplete: "new-password" %>
+          <div class="mb-3">
+            <%= f.label :password, "Nova senha", class: "form-label required" %>
+            <% if @minimum_password_length %>
+              <em>(<%= @minimum_password_length %> caracteres no mínimo)</em>
+            <% end %>
+            <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "form-control #{resource.errors[:password].any? ? 'is-invalid' : ''}", required: true, minlength: 6 %>
+            <% if resource.errors[:password].any? %>
+              <div class="invalid-feedback">
+                <%= resource.errors[:password].join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :password_confirmation, "Confirme a nova senha", class: "form-label required" %>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control #{resource.errors[:password_confirmation].any? ? 'is-invalid' : ''}", required: true, minlength: 6 %>
+            <% if resource.errors[:password_confirmation].any? %>
+              <div class="invalid-feedback">
+                <%= resource.errors[:password_confirmation].join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="d-grid gap-2">
+            <%= f.submit "Alterar minha senha", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+
+        <div class="mt-3 text-center">
+          <%= render "devise/shared/links" %>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation, "Confirm new password" %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Change my password" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>
