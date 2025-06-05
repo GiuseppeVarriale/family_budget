@@ -125,6 +125,12 @@ group :development, :test do
 
   # Static code analyzer with quality reports
   gem 'rubycritic'
+
+  # IDE tools for code completion and inline documentation
+  gem 'solargraph'
+
+  # Rails support for Solargraph
+  gem 'solargraph-rails'
 end
 
 group :development do
