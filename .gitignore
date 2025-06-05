@@ -35,3 +35,9 @@
 /config/master.key
 
 /config/database.yml
+
+# Ignore GitHub configuration files (Claude instructions, etc.)
+/.github
+
+# Ignore Vscode configuration files.
+/.vscode
