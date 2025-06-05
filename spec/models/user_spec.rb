@@ -4,6 +4,7 @@ RSpec.describe User, type: :model do
   describe 'associations' do
     it { should have_one(:profile).dependent(:destroy) }
     it { should accept_nested_attributes_for(:profile) }
+    it { should have_one(:family).dependent(:destroy) }
   end
 
   describe 'validations' do
@@ -70,6 +71,43 @@ RSpec.describe User, type: :model do
 
       user.destroy
       expect { Profile.find(profile_id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe 'family association' do
+    let(:user) { create(:user) }
+
+    it 'can have a family' do
+      family = create(:family, user: user)
+      expect(user.family).to eq(family)
+    end
+
+    it 'can exist without a family' do
+      expect(user.family).to be_nil
+    end
+
+    it 'destroys associated family when user is destroyed' do
+      family = create(:family, user: user)
+      family_id = family.id
+
+      user.destroy
+      expect { Family.find(family_id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'allows building a family through the association' do
+      family = user.build_family(name: 'Nova Família', description: 'Descrição da família')
+      expect(family.user).to eq(user)
+      expect(family.name).to eq('Nova Família')
+      expect(family.description).to eq('Descrição da família')
+    end
+
+    it 'can create a family through the association' do
+      expect {
+        user.create_family(name: 'Família Criada', description: 'Família criada diretamente')
+      }.to change(Family, :count).by(1)
+
+      expect(user.family.name).to eq('Família Criada')
+      expect(user.family.description).to eq('Família criada diretamente')
     end
   end
 end
