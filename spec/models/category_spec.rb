@@ -17,24 +17,17 @@ RSpec.describe Category, type: :model do
     let!(:income_category) { create(:category, category_type: :income) }
     let!(:expense_category) { create(:category, category_type: :expense) }
 
-    describe '.incomes' do
+    describe '.income' do
       it 'returns only income categories' do
-        expect(described_class.incomes).to include(income_category)
-        expect(described_class.incomes).not_to include(expense_category)
+        expect(described_class.income).to include(income_category)
+        expect(described_class.income).not_to include(expense_category)
       end
     end
 
-    describe '.expenses' do
+    describe '.expense' do
       it 'returns only expense categories' do
-        expect(described_class.expenses).to include(expense_category)
-        expect(described_class.expenses).not_to include(income_category)
-      end
-    end
-
-    describe '.by_type' do
-      it 'filters by specific type' do
-        expect(described_class.by_type(:income)).to include(income_category)
-        expect(described_class.by_type(:expense)).to include(expense_category)
+        expect(described_class.expense).to include(expense_category)
+        expect(described_class.expense).not_to include(income_category)
       end
     end
   end

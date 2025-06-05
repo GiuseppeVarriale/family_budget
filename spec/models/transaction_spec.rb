@@ -110,13 +110,13 @@ RSpec.describe Transaction, type: :model do
 
     describe '.by_category_type' do
       it 'returns transactions for income categories' do
-        result = Transaction.by_category_type(:income)
+        result = Transaction.by_category_type('income')
         expect(result).to include(income_transaction)
         expect(result).to_not include(expense_transaction)
       end
 
       it 'returns transactions for expense categories' do
-        result = Transaction.by_category_type(:expense)
+        result = Transaction.by_category_type('expense')
         expect(result).to include(expense_transaction)
         expect(result).to_not include(income_transaction)
       end
