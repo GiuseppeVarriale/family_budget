@@ -13,6 +13,7 @@ RSpec.describe Transaction, type: :model do
     it { should validate_length_of(:description).is_at_least(2).is_at_most(200) }
     it { should validate_presence_of(:transaction_date) }
     it { should validate_presence_of(:status) }
+    it { should validate_presence_of(:transaction_type) }
 
     context 'when is_recurring is true' do
       let(:transaction) { build(:transaction, is_recurring: true) }
@@ -37,6 +38,7 @@ RSpec.describe Transaction, type: :model do
   describe 'enumerize' do
     it { should enumerize(:status).in(:pending, :paid, :cancelled).with_default(:pending) }
     it { should enumerize(:recurring_frequency).in(:weekly, :monthly, :quarterly, :yearly) }
+    it { should enumerize(:transaction_type).in(:income, :expense).with_default(:expense) }
   end
 
   describe 'scopes' do
@@ -108,17 +110,17 @@ RSpec.describe Transaction, type: :model do
       end
     end
 
-    describe '.by_category_type' do
-      it 'returns transactions for income categories' do
-        result = Transaction.by_category_type('income')
-        expect(result).to include(income_transaction)
-        expect(result).to_not include(expense_transaction)
+    describe '.income' do
+      it 'returns only income transactions' do
+        expect(Transaction.income).to include(income_transaction)
+        expect(Transaction.income).to_not include(expense_transaction)
       end
+    end
 
-      it 'returns transactions for expense categories' do
-        result = Transaction.by_category_type('expense')
-        expect(result).to include(expense_transaction)
-        expect(result).to_not include(income_transaction)
+    describe '.expense' do
+      it 'returns only expense transactions' do
+        expect(Transaction.expense).to include(expense_transaction)
+        expect(Transaction.expense).to_not include(income_transaction)
       end
     end
 
@@ -176,29 +178,25 @@ RSpec.describe Transaction, type: :model do
     end
 
     describe '#income?' do
-      it 'returns true when category is income' do
-        income_category = create(:category, :income)
-        transaction.category = income_category
+      it 'returns true when transaction_type is income' do
+        transaction.transaction_type = :income
         expect(transaction.income?).to be true
       end
 
-      it 'returns false when category is expense' do
-        expense_category = create(:category, :expense)
-        transaction.category = expense_category
+      it 'returns false when transaction_type is expense' do
+        transaction.transaction_type = :expense
         expect(transaction.income?).to be false
       end
     end
 
     describe '#expense?' do
-      it 'returns true when category is expense' do
-        expense_category = create(:category, :expense)
-        transaction.category = expense_category
+      it 'returns true when transaction_type is expense' do
+        transaction.transaction_type = :expense
         expect(transaction.expense?).to be true
       end
 
-      it 'returns false when category is income' do
-        income_category = create(:category, :income)
-        transaction.category = income_category
+      it 'returns false when transaction_type is income' do
+        transaction.transaction_type = :income
         expect(transaction.expense?).to be false
       end
     end
