@@ -171,6 +171,8 @@ GEM
       dry-inflector (~> 1.0)
       dry-logic (~> 1.4)
       zeitwerk (~> 2.6)
+    enumerize (2.8.1)
+      activesupport (>= 3.2)
     erb (5.0.1)
     erubi (1.13.1)
     factory_bot (6.5.0)
@@ -641,6 +643,7 @@ DEPENDENCIES
   devise
   devise-i18n
   dotenv-rails
+  enumerize
   factory_bot_rails
   faker
   formulaic
