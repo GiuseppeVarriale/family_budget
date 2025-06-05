@@ -2,9 +2,10 @@ class Transaction < ApplicationRecord
   extend Enumerize
 
   belongs_to :category
+  belongs_to :family
 
-  enumerize :status, in: [:pending, :paid, :cancelled], default: :pending
-  enumerize :recurring_frequency, in: [:weekly, :monthly, :quarterly, :yearly]
+  enumerize :status, in: %i[pending paid cancelled], default: :pending
+  enumerize :recurring_frequency, in: %i[weekly monthly quarterly yearly]
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :description, presence: true, length: { minimum: 2, maximum: 200 }
@@ -20,6 +21,7 @@ class Transaction < ApplicationRecord
   scope :for_period, ->(start_date, end_date) { where(transaction_date: start_date..end_date) }
   scope :by_category, ->(category) { where(category: category) }
   scope :by_category_type, ->(type) { joins(:category).where(categories: { category_type: type }) }
+  scope :by_family, ->(family) { where(family: family) }
 
   def pending?
     status == 'pending'
