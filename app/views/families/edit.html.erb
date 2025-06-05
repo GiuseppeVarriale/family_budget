@@ -1,0 +1,67 @@
+<% content_for :title, "Editar Família" %>
+
+<div class="container mt-4">
+  <div class="row justify-content-md-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="bi bi-pencil-square me-2"></i>
+            Editar Família
+          </h4>
+        </div>
+        <div class="card-body">
+          <%= form_with model: @family, local: true, class: "needs-validation", novalidate: true do |form| %>
+            <% if @family.errors.any? %>
+              <div class="alert alert-danger" role="alert">
+                <h6 class="alert-heading">Erro ao atualizar família:</h6>
+                <ul class="mb-0">
+                  <% @family.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= form.label :name, "Nome da Família", class: "form-label" %>
+              <%= form.text_field :name, class: "form-control", placeholder: "Ex: Família Silva", required: true %>
+              <div class="invalid-feedback">
+                Por favor, informe o nome da família.
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :description, "Descrição (opcional)", class: "form-label" %>
+              <%= form.text_area :description, class: "form-control", rows: 3, placeholder: "Descreva brevemente sobre sua família..." %>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <%= link_to "Cancelar", family_path, class: "btn btn-outline-secondary me-md-2" %>
+              <%= form.submit "Salvar Alterações", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Bootstrap form validation
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    var forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {  
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
