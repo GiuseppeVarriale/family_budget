@@ -4,6 +4,7 @@ FactoryBot.define do
     description { 'Transação de teste' }
     transaction_date { Date.current }
     status { :pending }
+    transaction_type { :expense }
     is_recurring { false }
     is_approximate { false }
     notes { 'Notas da transação' }
@@ -32,10 +33,12 @@ FactoryBot.define do
     end
 
     trait :income do
+      transaction_type { :income }
       association :category, factory: %i[category income]
     end
 
     trait :expense do
+      transaction_type { :expense }
       association :category, factory: %i[category expense]
     end
 

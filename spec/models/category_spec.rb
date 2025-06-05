@@ -13,28 +13,46 @@ RSpec.describe Category, type: :model do
     it { is_expected.to enumerize(:category_type).in(:income, :expense).with_default(:expense) }
   end
 
+  describe 'I18n translations' do
+    around do |example|
+      I18n.with_locale('pt-BR') { example.run }
+    end
+
+    describe 'category_type' do
+      let(:income_category) { build(:category, category_type: :income) }
+      let(:expense_category) { build(:category, category_type: :expense) }
+
+      it 'translates income to Portuguese' do
+        expect(income_category.category_type.text).to eq('Receita')
+      end
+
+      it 'translates expense to Portuguese' do
+        expect(expense_category.category_type.text).to eq('Despesa')
+      end
+
+      it 'provides all translated options' do
+        translated_options = Category.category_type.options
+        expect(translated_options).to include(['Receita', 'income'])
+        expect(translated_options).to include(['Despesa', 'expense'])
+      end
+    end
+  end
+
   describe 'scopes' do
     let!(:income_category) { create(:category, category_type: :income) }
     let!(:expense_category) { create(:category, category_type: :expense) }
 
-    describe '.incomes' do
+    describe '.income' do
       it 'returns only income categories' do
-        expect(described_class.incomes).to include(income_category)
-        expect(described_class.incomes).not_to include(expense_category)
+        expect(described_class.income).to include(income_category)
+        expect(described_class.income).not_to include(expense_category)
       end
     end
 
-    describe '.expenses' do
+    describe '.expense' do
       it 'returns only expense categories' do
-        expect(described_class.expenses).to include(expense_category)
-        expect(described_class.expenses).not_to include(income_category)
-      end
-    end
-
-    describe '.by_type' do
-      it 'filters by specific type' do
-        expect(described_class.by_type(:income)).to include(income_category)
-        expect(described_class.by_type(:expense)).to include(expense_category)
+        expect(described_class.expense).to include(expense_category)
+        expect(described_class.expense).not_to include(income_category)
       end
     end
   end

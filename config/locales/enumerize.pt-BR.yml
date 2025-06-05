@@ -1,0 +1,25 @@
+pt-BR:
+  enumerize:
+    defaults:
+      # Category model - category_type
+      category_type:
+        income: "Receita"
+        expense: "Despesa"
+
+      # Transaction model - status
+      status:
+        pending: "Pendente"
+        paid: "Pago"
+        cancelled: "Cancelado"
+
+      # Transaction model - recurring_frequency
+      recurring_frequency:
+        weekly: "Semanal"
+        monthly: "Mensal"
+        quarterly: "Trimestral"
+        yearly: "Anual"
+
+      # Transaction model - transaction_type
+      transaction_type:
+        income: "Receita"
+        expense: "Despesa"

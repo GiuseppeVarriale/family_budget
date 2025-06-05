@@ -39,7 +39,7 @@ RSpec.describe Family, type: :model do
     it 'can have multiple transactions' do
       transaction1 = create(:transaction, family: family, category: category)
       transaction2 = create(:transaction, family: family, category: category)
-      
+
       expect(family.transactions).to include(transaction1, transaction2)
       expect(family.transactions.count).to eq(2)
     end
@@ -48,7 +48,7 @@ RSpec.describe Family, type: :model do
       transaction1 = create(:transaction, family: family, category: category)
       transaction2 = create(:transaction, family: family, category: category)
       transaction_ids = [transaction1.id, transaction2.id]
-      
+
       expect { family.destroy }.to change { Transaction.count }.by(-2)
       expect(Transaction.where(id: transaction_ids)).to be_empty
     end
@@ -56,14 +56,12 @@ RSpec.describe Family, type: :model do
 
   describe 'financial calculations' do
     let(:family) { create(:family, user: user) }
-    let(:income_category) { create(:category, :income) }
-    let(:expense_category) { create(:category, :expense) }
 
     before do
-      create(:transaction, amount: 100.00, family: family, category: income_category)
-      create(:transaction, amount: 200.00, family: family, category: income_category)
-      create(:transaction, amount: 50.00, family: family, category: expense_category)
-      create(:transaction, amount: 75.00, family: family, category: expense_category)
+      create(:transaction, :income, amount: 100.00, family: family)
+      create(:transaction, :income, amount: 200.00, family: family)
+      create(:transaction, :expense, amount: 50.00, family: family)
+      create(:transaction, :expense, amount: 75.00, family: family)
     end
 
     describe '#total_income' do
@@ -115,23 +113,21 @@ RSpec.describe Family, type: :model do
     let(:category) { create(:category) }
 
     before do
-      @current_month_transaction = create(:transaction, 
-        transaction_date: Date.current.beginning_of_month + 5.days, 
-        family: family, 
-        category: category
-      )
-      @last_month_transaction = create(:transaction, 
-        transaction_date: 1.month.ago, 
-        family: family, 
-        category: category
-      )
+      @current_month_transaction = create(:transaction,
+                                          transaction_date: Date.current.beginning_of_month + 5.days,
+                                          family: family,
+                                          category: category)
+      @last_month_transaction = create(:transaction,
+                                       transaction_date: 1.month.ago,
+                                       family: family,
+                                       category: category)
     end
 
     describe '#transactions_for_period' do
       it 'returns transactions within the specified period' do
         start_date = Date.current.beginning_of_month
         end_date = Date.current.end_of_month
-        
+
         result = family.transactions_for_period(start_date, end_date)
         expect(result).to include(@current_month_transaction)
         expect(result).not_to include(@last_month_transaction)

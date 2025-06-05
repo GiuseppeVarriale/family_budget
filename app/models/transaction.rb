@@ -4,44 +4,22 @@ class Transaction < ApplicationRecord
   belongs_to :category
   belongs_to :family
 
-  enumerize :status, in: %i[pending paid cancelled], default: :pending
-  enumerize :recurring_frequency, in: %i[weekly monthly quarterly yearly]
+  enumerize :status, in: %i[pending paid cancelled], default: :pending, scope: :shallow, predicates: true
+  enumerize :recurring_frequency, in: %i[weekly monthly quarterly yearly], scope: :shallow
+  enumerize :transaction_type, in: %i[income expense], default: :expense, scope: :shallow, predicates: true
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :description, presence: true, length: { minimum: 2, maximum: 200 }
   validates :transaction_date, presence: true
   validates :status, presence: true
+  validates :transaction_type, presence: true
   validates :recurring_frequency, presence: true, if: :is_recurring?
 
-  scope :pending, -> { where(status: :pending) }
-  scope :paid, -> { where(status: :paid) }
-  scope :cancelled, -> { where(status: :cancelled) }
   scope :recurring, -> { where(is_recurring: true) }
   scope :approximate, -> { where(is_approximate: true) }
   scope :for_period, ->(start_date, end_date) { where(transaction_date: start_date..end_date) }
   scope :by_category, ->(category) { where(category: category) }
-  scope :by_category_type, ->(type) { joins(:category).where(categories: { category_type: type }) }
   scope :by_family, ->(family) { where(family: family) }
-
-  def pending?
-    status == 'pending'
-  end
-
-  def paid?
-    status == 'paid'
-  end
-
-  def cancelled?
-    status == 'cancelled'
-  end
-
-  def income?
-    category&.income?
-  end
-
-  def expense?
-    category&.expense?
-  end
 
   def to_s
     description
