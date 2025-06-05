@@ -15,7 +15,7 @@ pt-BR:
         current_password: Senha atual
     errors:
       messages:
-        record_invalid: "Registro inválido"
+        record_invalid: "A validação falhou: %{errors}"
         blank: não pode ficar em branco
         taken: já está em uso
         invalid: não é válido

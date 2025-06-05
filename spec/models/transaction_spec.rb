@@ -291,4 +291,85 @@ RSpec.describe Transaction, type: :model do
       end
     end
   end
+
+  describe 'I18n translations' do
+    around do |example|
+      I18n.with_locale('pt-BR') { example.run }
+    end
+
+    describe 'status' do
+      let(:pending_transaction) { build(:transaction, status: :pending) }
+      let(:paid_transaction) { build(:transaction, status: :paid) }
+      let(:cancelled_transaction) { build(:transaction, status: :cancelled) }
+
+      it 'translates pending to Portuguese' do
+        expect(pending_transaction.status.text).to eq('Pendente')
+      end
+
+      it 'translates paid to Portuguese' do
+        expect(paid_transaction.status.text).to eq('Pago')
+      end
+
+      it 'translates cancelled to Portuguese' do
+        expect(cancelled_transaction.status.text).to eq('Cancelado')
+      end
+
+      it 'provides all translated status options' do
+        translated_options = Transaction.status.options
+        expect(translated_options).to include(['Pendente', 'pending'])
+        expect(translated_options).to include(['Pago', 'paid'])
+        expect(translated_options).to include(['Cancelado', 'cancelled'])
+      end
+    end
+
+    describe 'recurring_frequency' do
+      let(:weekly_transaction) { build(:transaction, recurring_frequency: :weekly) }
+      let(:monthly_transaction) { build(:transaction, recurring_frequency: :monthly) }
+      let(:quarterly_transaction) { build(:transaction, recurring_frequency: :quarterly) }
+      let(:yearly_transaction) { build(:transaction, recurring_frequency: :yearly) }
+
+      it 'translates weekly to Portuguese' do
+        expect(weekly_transaction.recurring_frequency.text).to eq('Semanal')
+      end
+
+      it 'translates monthly to Portuguese' do
+        expect(monthly_transaction.recurring_frequency.text).to eq('Mensal')
+      end
+
+      it 'translates quarterly to Portuguese' do
+        expect(quarterly_transaction.recurring_frequency.text).to eq('Trimestral')
+      end
+
+      it 'translates yearly to Portuguese' do
+        expect(yearly_transaction.recurring_frequency.text).to eq('Anual')
+      end
+
+      it 'provides all translated frequency options' do
+        translated_options = Transaction.recurring_frequency.options
+        expect(translated_options).to include(['Semanal', 'weekly'])
+        expect(translated_options).to include(['Mensal', 'monthly'])
+        expect(translated_options).to include(['Trimestral', 'quarterly'])
+        expect(translated_options).to include(['Anual', 'yearly'])
+      end
+    end
+
+    describe 'transaction_type' do
+      let(:income_transaction) { build(:transaction, transaction_type: :income) }
+      let(:expense_transaction) { build(:transaction, transaction_type: :expense) }
+
+      it 'translates income to Portuguese' do
+        expect(income_transaction.transaction_type.text).to eq('Receita')
+      end
+
+      it 'translates expense to Portuguese' do
+        expect(expense_transaction.transaction_type.text).to eq('Despesa')
+      end
+
+      it 'provides all translated transaction_type options' do
+        translated_options = Transaction.transaction_type.options
+        expect(translated_options).to include(['Receita', 'income'])
+        expect(translated_options).to include(['Despesa', 'expense'])
+      end
+    end
+  end
 end

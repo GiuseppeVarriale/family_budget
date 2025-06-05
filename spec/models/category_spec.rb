@@ -13,6 +13,31 @@ RSpec.describe Category, type: :model do
     it { is_expected.to enumerize(:category_type).in(:income, :expense).with_default(:expense) }
   end
 
+  describe 'I18n translations' do
+    around do |example|
+      I18n.with_locale('pt-BR') { example.run }
+    end
+
+    describe 'category_type' do
+      let(:income_category) { build(:category, category_type: :income) }
+      let(:expense_category) { build(:category, category_type: :expense) }
+
+      it 'translates income to Portuguese' do
+        expect(income_category.category_type.text).to eq('Receita')
+      end
+
+      it 'translates expense to Portuguese' do
+        expect(expense_category.category_type.text).to eq('Despesa')
+      end
+
+      it 'provides all translated options' do
+        translated_options = Category.category_type.options
+        expect(translated_options).to include(['Receita', 'income'])
+        expect(translated_options).to include(['Despesa', 'expense'])
+      end
+    end
+  end
+
   describe 'scopes' do
     let!(:income_category) { create(:category, category_type: :income) }
     let!(:expense_category) { create(:category, category_type: :expense) }
