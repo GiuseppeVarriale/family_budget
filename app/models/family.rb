@@ -6,11 +6,11 @@ class Family < ApplicationRecord
   validates :description, length: { maximum: 500 }
 
   def total_income
-    transactions.joins(:category).where(categories: { category_type: 'income' }).sum(:amount)
+    transactions.income.sum(:amount)
   end
 
   def total_expenses
-    transactions.joins(:category).where(categories: { category_type: 'expense' }).sum(:amount)
+    transactions.expense.sum(:amount)
   end
 
   def balance

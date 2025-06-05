@@ -6,27 +6,20 @@ class Transaction < ApplicationRecord
 
   enumerize :status, in: %i[pending paid cancelled], default: :pending, scope: :shallow, predicates: true
   enumerize :recurring_frequency, in: %i[weekly monthly quarterly yearly], scope: :shallow
+  enumerize :transaction_type, in: %i[income expense], default: :expense, scope: :shallow, predicates: true
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :description, presence: true, length: { minimum: 2, maximum: 200 }
   validates :transaction_date, presence: true
   validates :status, presence: true
+  validates :transaction_type, presence: true
   validates :recurring_frequency, presence: true, if: :is_recurring?
 
   scope :recurring, -> { where(is_recurring: true) }
   scope :approximate, -> { where(is_approximate: true) }
   scope :for_period, ->(start_date, end_date) { where(transaction_date: start_date..end_date) }
   scope :by_category, ->(category) { where(category: category) }
-  scope :by_category_type, ->(type) { joins(:category).merge(Category.public_send(type)) }
   scope :by_family, ->(family) { where(family: family) }
-
-  def income?
-    category&.income?
-  end
-
-  def expense?
-    category&.expense?
-  end
 
   def to_s
     description
