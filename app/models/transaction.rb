@@ -4,7 +4,7 @@ class Transaction < ApplicationRecord
   belongs_to :category
   belongs_to :family
 
-  enumerize :status, in: %i[pending paid cancelled], default: :pending, scope: :shallow
+  enumerize :status, in: %i[pending paid cancelled], default: :pending, scope: :shallow, predicates: true
   enumerize :recurring_frequency, in: %i[weekly monthly quarterly yearly], scope: :shallow
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
@@ -19,18 +19,6 @@ class Transaction < ApplicationRecord
   scope :by_category, ->(category) { where(category: category) }
   scope :by_category_type, ->(type) { joins(:category).merge(Category.public_send(type)) }
   scope :by_family, ->(family) { where(family: family) }
-
-  def pending?
-    status == 'pending'
-  end
-
-  def paid?
-    status == 'paid'
-  end
-
-  def cancelled?
-    status == 'cancelled'
-  end
 
   def income?
     category&.income?

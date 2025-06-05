@@ -3,18 +3,10 @@ class Category < ApplicationRecord
 
   has_many :transactions, dependent: :destroy
 
-  enumerize :category_type, in: %i[income expense], default: :expense, scope: :shallow
+  enumerize :category_type, in: %i[income expense], default: :expense, scope: :shallow, predicates: true
 
   validates :description, presence: true, length: { minimum: 2, maximum: 100 }
   validates :category_type, presence: true
-
-  def income?
-    category_type == 'income'
-  end
-
-  def expense?
-    category_type == 'expense'
-  end
 
   def to_s
     description
