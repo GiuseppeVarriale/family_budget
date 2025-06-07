@@ -4,8 +4,10 @@ RSpec.describe Category, type: :model do
   subject(:category) { build(:category) }
 
   describe 'validations' do
+    it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:description) }
     it { is_expected.to validate_presence_of(:category_type) }
+    it { is_expected.to validate_length_of(:name).is_at_least(2).is_at_most(50) }
     it { is_expected.to validate_length_of(:description).is_at_least(2).is_at_most(100) }
   end
 
@@ -83,8 +85,8 @@ RSpec.describe Category, type: :model do
     end
 
     describe '#to_s' do
-      it 'returns the description of the category' do
-        category.description = 'Rent'
+      it 'returns the name of the category' do
+        category.name = 'Rent'
         expect(category.to_s).to eq('Rent')
       end
     end
