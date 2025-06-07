@@ -23,7 +23,12 @@ class TransactionsController < ApplicationController
     if @transaction.save
       redirect_to dashboard_path, notice: 'Transação criada com sucesso!'
     else
-      redirect_to dashboard_path, alert: "Erro ao criar transação: #{@transaction.errors.full_messages.join(', ')}"
+      flash.now[:alert] = "Erro ao criar transação: #{@transaction.errors.full_messages.join(', ')}"
+      @current_month_income = current_user.family.transactions.income.current_month.sum(:amount)
+      @current_month_expenses = current_user.family.transactions.expense.current_month.sum(:amount)
+      @current_month_balance = @current_month_income - @current_month_expenses
+
+      render 'dashboard/index', status: :unprocessable_entity
     end
   end
 
