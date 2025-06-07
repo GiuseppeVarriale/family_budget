@@ -1,0 +1,135 @@
+<% content_for :title, "Nova Transação" %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-plus"></i> Nova Transação
+          </h4>
+        </div>
+        <div class="card-body">
+          <%= form_with model: [@current_user.family, @transaction], local: true, html: { class: "transaction-form" } do |form| %>
+            <% if @transaction.errors.any? %>
+              <div class="alert alert-danger">
+                <h5><%= pluralize(@transaction.errors.count, "erro") %> impedem que esta transação seja salva:</h5>
+                <ul class="mb-0">
+                  <% @transaction.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= form.label :description, "Descrição", class: "form-label" %>
+              <%= form.text_field :description, class: "form-control", placeholder: "Ex: Salário, Supermercado, etc." %>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <%= form.label :amount, "Valor (R$)", class: "form-label" %>
+                  <%= form.number_field :amount, step: 0.01, min: 0, class: "form-control", placeholder: "0,00" %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <%= form.label :transaction_date, "Data", class: "form-label" %>
+                  <%= form.date_field :transaction_date, class: "form-control", value: Date.current %>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <%= form.label :category_id, "Categoria", class: "form-label" %>
+                  <%= form.select :category_id,
+                      options_from_collection_for_select(Category.all, :id, :name),
+                      { prompt: "Selecione uma categoria" },
+                      { class: "form-select" } %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <%= form.label :transaction_type, "Tipo", class: "form-label" %>
+                  <%= form.select :transaction_type,
+                      options_for_select([
+                        ['Receita', 'income'],
+                        ['Despesa', 'expense']
+                      ]),
+                      { prompt: "Selecione o tipo" },
+                      { class: "form-select" } %>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <%= form.label :status, "Status", class: "form-label" %>
+                  <%= form.select :status,
+                      options_for_select([
+                        ['Pendente', 'pending'],
+                        ['Pago', 'paid'],
+                        ['Cancelado', 'cancelled']
+                      ]),
+                      { prompt: "Selecione o status" },
+                      { class: "form-select" } %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3 form-check" style="margin-top: 2.5rem;">
+                  <%= form.check_box :is_approximate, class: "form-check-input" %>
+                  <%= form.label :is_approximate, "Valor aproximado", class: "form-check-label" %>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3 form-check">
+              <%= form.check_box :is_recurring, class: "form-check-input" %>
+              <%= form.label :is_recurring, "Transação recorrente", class: "form-check-label" %>
+            </div>
+
+            <div class="mb-3" id="recurring-frequency-new" style="display: none;">
+              <%= form.label :recurring_frequency, "Frequência", class: "form-label" %>
+              <%= form.select :recurring_frequency,
+                  options_for_select([
+                    ['Semanal', 'weekly'],
+                    ['Mensal', 'monthly'],
+                    ['Trimestral', 'quarterly'],
+                    ['Anual', 'yearly']
+                  ]),
+                  { prompt: "Selecione a frequência" },
+                  { class: "form-select" } %>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <%= link_to 'Cancelar', dashboard_path, class: 'btn btn-secondary me-md-2' %>
+              <%= form.submit "Criar Transação", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const recurringCheckbox = document.querySelector('input[name="transaction[is_recurring]"]');
+  const frequencyDiv = document.querySelector('#recurring-frequency-new');
+
+  if (recurringCheckbox) {
+    recurringCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        frequencyDiv.style.display = 'block';
+      } else {
+        frequencyDiv.style.display = 'none';
+      }
+    });
+  }
+});
+</script>

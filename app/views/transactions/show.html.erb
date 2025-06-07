@@ -1,0 +1,106 @@
+<% content_for :title, "Detalhes da Transação" %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header bg-<%= @transaction.income? ? 'success' : 'danger' %> text-white">
+          <h4 class="mb-0">
+            <i class="fas fa-<%= @transaction.income? ? 'arrow-up' : 'arrow-down' %>"></i>
+            <%= @transaction.description %>
+          </h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <dl class="row">
+                <dt class="col-sm-4">Valor:</dt>
+                <dd class="col-sm-8">
+                  <span class="h5 <%= @transaction.income? ? 'text-success' : 'text-danger' %>">
+                    <%= @transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(@transaction.amount, delimiter: '.', separator: ',') %>
+                  </span>
+                </dd>
+              </dl>
+            </div>
+            <div class="col-md-6">
+              <dl class="row">
+                <dt class="col-sm-4">Status:</dt>
+                <dd class="col-sm-8">
+                  <span class="badge bg-<%= @transaction.paid? ? 'success' : @transaction.pending? ? 'warning' : 'secondary' %>">
+                    <%= @transaction.status.humanize %>
+                  </span>
+                </dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <dl class="row">
+                <dt class="col-sm-4">Data:</dt>
+                <dd class="col-sm-8"><%= l @transaction.transaction_date, format: :long %></dd>
+              </dl>
+            </div>
+            <div class="col-md-6">
+              <dl class="row">
+                <dt class="col-sm-4">Categoria:</dt>
+                <dd class="col-sm-8">
+                  <span class="badge bg-secondary"><%= @transaction.category.name %></span>
+                </dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <dl class="row">
+                <dt class="col-sm-4">Tipo:</dt>
+                <dd class="col-sm-8">
+                  <span class="badge <%= @transaction.income? ? 'bg-success' : 'bg-danger' %>">
+                    <%= @transaction.transaction_type.humanize %>
+                  </span>
+                </dd>
+              </dl>
+            </div>
+            <div class="col-md-6">
+              <dl class="row">
+                <dt class="col-sm-4">Recorrente:</dt>
+                <dd class="col-sm-8">
+                  <% if @transaction.is_recurring? %>
+                    <span class="badge bg-info">
+                      Sim - <%= @transaction.recurring_frequency.humanize %>
+                    </span>
+                  <% else %>
+                    <span class="badge bg-secondary">Não</span>
+                  <% end %>
+                </dd>
+              </dl>
+            </div>
+          </div>
+
+          <% if @transaction.is_approximate? %>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="alert alert-info">
+                  <i class="fas fa-info-circle"></i>
+                  <strong>Valor Aproximado:</strong> Este valor é uma estimativa.
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <div class="card-footer">
+          <div class="btn-group" role="group">
+            <%= link_to 'Editar', edit_transaction_path(@transaction), class: 'btn btn-warning' %>
+            <%= link_to 'Excluir', @transaction, method: :delete,
+                        class: 'btn btn-danger',
+                        confirm: 'Tem certeza que deseja excluir esta transação?',
+                        data: { turbo_method: :delete } %>
+            <%= link_to 'Voltar', transactions_path, class: 'btn btn-secondary' %>
+            <%= link_to 'Dashboard', dashboard_path, class: 'btn btn-primary' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

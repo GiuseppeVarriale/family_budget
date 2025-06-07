@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   }
   resource :profile, only: %i[edit update]
   resource :family, only: %i[show new create edit update destroy]
+  get 'dashboard', to: 'dashboard#index', as: 'dashboard'
+  resources :transactions
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

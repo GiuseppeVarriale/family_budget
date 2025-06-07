@@ -21,8 +21,8 @@ RSpec.describe 'shared/_navbar', type: :view do
 
     it 'does not display finances dropdown' do
       expect(rendered).not_to have_content('Finanças')
-      expect(rendered).not_to have_link('Receitas')
-      expect(rendered).not_to have_link('Despesas')
+      expect(rendered).not_to have_link('Todas as Transações')
+      expect(rendered).not_to have_link('Nova Transação')
       expect(rendered).not_to have_link('Relatórios')
     end
 
@@ -51,8 +51,8 @@ RSpec.describe 'shared/_navbar', type: :view do
     end
 
     it 'displays finances dropdown items' do
-      expect(rendered).to have_link('Receitas')
-      expect(rendered).to have_link('Despesas')
+      expect(rendered).to have_link('Todas as Transações')
+      expect(rendered).to have_link('Nova Transação')
       expect(rendered).to have_link('Relatórios')
     end
 

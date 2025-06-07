@@ -21,14 +21,10 @@ RSpec.describe 'Home', type: :request do
         sign_in user
       end
 
-      it 'returns a successful response' do
+      it 'redirects to dashboard' do
         get root_path
-        expect(response).to have_http_status(:success)
-      end
-
-      it 'renders the index template' do
-        get root_path
-        expect(response).to render_template(:index)
+        expect(response).to have_http_status(:redirect)
+        expect(response).to redirect_to(dashboard_path)
       end
     end
   end
