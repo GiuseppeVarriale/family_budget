@@ -1,3 +1,4 @@
+# Transaction model representing family financial transactions
 class Transaction < ApplicationRecord
   extend Enumerize
 
@@ -17,6 +18,7 @@ class Transaction < ApplicationRecord
 
   scope :recurring, -> { where(is_recurring: true) }
   scope :approximate, -> { where(is_approximate: true) }
+  scope :current_month, -> { where(transaction_date: Date.current.beginning_of_month..Date.current.end_of_month) }
   scope :for_period, ->(start_date, end_date) { where(transaction_date: start_date..end_date) }
   scope :by_category, ->(category) { where(category: category) }
   scope :by_family, ->(family) { where(family: family) }
