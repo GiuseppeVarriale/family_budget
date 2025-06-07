@@ -21,16 +21,21 @@
   <body>
     <%= render "shared/navbar" %>
 
-    <% if notice %>
-      <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
-        <%= notice %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <% end %>
-
-    <% if alert %>
-      <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
-        <%= alert %>
+    <% flash.each do |key, value| %>
+      <% alert_class = case key.to_s
+                       when 'notice'
+                         'alert-success'
+                       when 'alert'
+                         'alert-danger'
+                       when 'info'
+                         'alert-info'
+                       when 'warning'
+                         'alert-warning'
+                       else
+                         'alert-primary'
+                       end %>
+      <div class="alert <%= alert_class %> alert-dismissible fade show m-3" role="alert">
+        <%= value %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     <% end %>

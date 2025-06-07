@@ -21,10 +21,29 @@ RSpec.describe 'Home', type: :request do
         sign_in user
       end
 
-      it 'redirects to dashboard' do
-        get root_path
-        expect(response).to have_http_status(:redirect)
-        expect(response).to redirect_to(dashboard_path)
+      context 'when user has a family' do
+        before do
+          create(:family, user: user)
+        end
+
+        it 'redirects to dashboard' do
+          get root_path
+          expect(response).to have_http_status(:redirect)
+          expect(response).to redirect_to(dashboard_path)
+        end
+      end
+
+      context 'when user does not have a family' do
+        it 'redirects to new family path' do
+          get root_path
+          expect(response).to have_http_status(:redirect)
+          expect(response).to redirect_to(new_family_path)
+        end
+
+        it 'sets welcome flash message' do
+          get root_path
+          expect(flash[:info]).to eq('Seja bem-vindo! O primeiro passo da sua jornada é criar sua família, assim poderemos ajuda-lo com seu orçamento.')
+        end
       end
     end
   end

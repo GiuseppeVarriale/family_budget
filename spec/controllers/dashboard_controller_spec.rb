@@ -48,4 +48,21 @@ RSpec.describe DashboardController, type: :controller do
       expect(response).to redirect_to(new_user_session_path)
     end
   end
+
+  describe 'when user does not have a family' do
+    let(:user_without_family) { create(:user) }
+
+    before do
+      sign_in user_without_family
+      get :index
+    end
+
+    it 'redirects to new family path' do
+      expect(response).to redirect_to(new_family_path)
+    end
+
+    it 'sets info flash message' do
+      expect(flash[:info]).to eq("Seja bem-vindo! O primeiro passo da sua jornada é criar sua família, assim poderemos ajuda-lo com seu orçamento.")
+    end
+  end
 end
