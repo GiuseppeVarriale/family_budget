@@ -1,0 +1,76 @@
+<% content_for :title, "Transações" %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Minhas Transações</h1>
+        <%= link_to 'Voltar ao Dashboard', dashboard_path, class: 'btn btn-secondary' %>
+      </div>
+    </div>
+  </div>
+
+  <% if @transactions.any? %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th>Tipo</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @transactions.each do |transaction| %>
+                <tr>
+                  <td><%= l transaction.transaction_date, format: :short %></td>
+                  <td><%= transaction.description %></td>
+                  <td><%= transaction.category.name %></td>
+                  <td>
+                    <span class="badge <%= transaction.income? ? 'bg-success' : 'bg-danger' %>">
+                      <%= transaction.transaction_type.humanize %>
+                    </span>
+                  </td>
+                  <td class="<%= transaction.income? ? 'text-success' : 'text-danger' %>">
+                    <%= transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
+                  </td>
+                  <td>
+                    <span class="badge bg-<%= transaction.paid? ? 'success' : transaction.pending? ? 'warning' : 'secondary' %>">
+                      <%= transaction.status.humanize %>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <%= link_to 'Ver', transaction, class: 'btn btn-outline-primary btn-sm' %>
+                      <%= link_to 'Editar', edit_transaction_path(transaction), class: 'btn btn-outline-secondary btn-sm' %>
+                      <%= link_to 'Excluir', transaction, method: :delete,
+                                  class: 'btn btn-outline-danger btn-sm',
+                                  confirm: 'Tem certeza que deseja excluir esta transação?',
+                                  data: { turbo_method: :delete } %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-info text-center">
+          <h4>Nenhuma transação encontrada</h4>
+          <p>Você ainda não possui transações cadastradas.</p>
+          <%= link_to 'Ir para o Dashboard', dashboard_path, class: 'btn btn-primary' %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
