@@ -1,9 +1,16 @@
 <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);">
   <div class="container">
     <% if user_signed_in? %>
-      <%= link_to dashboard_path, class: "navbar-brand" do %>
-        <i class="bi bi-wallet2 me-2"></i>
-        Family Budget
+      <% if user_needs_family_setup? %>
+        <%= link_to new_family_path, class: "navbar-brand" do %>
+          <i class="bi bi-wallet2 me-2"></i>
+          Family Budget
+        <% end %>
+      <% else %>
+        <%= link_to dashboard_path, class: "navbar-brand" do %>
+          <i class="bi bi-wallet2 me-2"></i>
+          Family Budget
+        <% end %>
       <% end %>
     <% else %>
       <a class="navbar-brand" href="/">
@@ -22,27 +29,31 @@
           </li>
         <% end %>
         <% if user_signed_in? %>
-          <li class="nav-item">
-            <%= link_to "Dashboard", dashboard_path, class: "nav-link #{current_page?(dashboard_path) ? 'active' : ''}" %>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Finanças
-            </a>
-            <ul class="dropdown-menu">
-              <li><%= link_to "Todas as Transações", transactions_path, class: "dropdown-item" %></li>
-              <li><%= link_to "Nova Transação", new_transaction_path, class: "dropdown-item" %></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><%= link_to "Relatórios", "#", class: "dropdown-item disabled" %></li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <% if current_user.family.present? %>
+          <% if user_needs_family_setup? %>
+            <!-- User needs to create family first -->
+            <li class="nav-item">
+              <%= link_to "Criar Família", new_family_path, class: "nav-link #{current_page?(new_family_path) ? 'active' : ''}" %>
+            </li>
+          <% else %>
+            <!-- User has family, show full navigation -->
+            <li class="nav-item">
+              <%= link_to "Dashboard", dashboard_path, class: "nav-link #{current_page?(dashboard_path) ? 'active' : ''}" %>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Finanças
+              </a>
+              <ul class="dropdown-menu">
+                <li><%= link_to "Todas as Transações", transactions_path, class: "dropdown-item" %></li>
+                <li><%= link_to "Nova Transação", new_transaction_path, class: "dropdown-item" %></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><%= link_to "Relatórios", "#", class: "dropdown-item disabled" %></li>
+              </ul>
+            </li>
+            <li class="nav-item">
               <%= link_to "Gerenciar Família", family_path, class: "nav-link" %>
-            <% else %>
-              <%= link_to "Criar Família", new_family_path, class: "nav-link" %>
-            <% end %>
-          </li>
+            </li>
+          <% end %>
         <% end %>
       </ul>
       <div class="d-flex">

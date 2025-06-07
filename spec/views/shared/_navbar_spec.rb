@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe 'shared/_navbar', type: :view do
+  before do
+    # Include ApplicationController helpers in view tests
+    view.extend ApplicationController._helpers
+  end
   context 'when user is not signed in' do
     before do
       allow(view).to receive(:user_signed_in?).and_return(false)
@@ -39,39 +43,76 @@ RSpec.describe 'shared/_navbar', type: :view do
     before do
       allow(view).to receive(:user_signed_in?).and_return(true)
       allow(view).to receive(:current_user).and_return(user)
-      render partial: 'shared/navbar'
     end
 
-    it 'displays dashboard link' do
-      expect(rendered).to have_link('Dashboard')
+    context 'when user needs family setup' do
+      before do
+        allow(view).to receive(:user_needs_family_setup?).and_return(true)
+        render partial: 'shared/navbar'
+      end
+
+      it 'displays create family link' do
+        expect(rendered).to have_link('Criar Família', href: new_family_path)
+      end
+
+      it 'does not display dashboard link' do
+        expect(rendered).not_to have_link('Dashboard')
+      end
+
+      it 'does not display finances dropdown' do
+        expect(rendered).not_to have_content('Finanças')
+      end
+
+      it 'displays user profile dropdown' do
+        expect(rendered).to have_content(user.profile.first_name)
+      end
+
+      it 'does not display login button' do
+        expect(rendered).not_to have_link('Entrar')
+      end
+
+      it 'does not display sign up button' do
+        expect(rendered).not_to have_link('Cadastrar')
+      end
     end
 
-    it 'displays finances dropdown' do
-      expect(rendered).to have_content('Finanças')
-    end
+    context 'when user has family' do
+      before do
+        allow(view).to receive(:user_needs_family_setup?).and_return(false)
+        render partial: 'shared/navbar'
+      end
 
-    it 'displays finances dropdown items' do
-      expect(rendered).to have_link('Todas as Transações')
-      expect(rendered).to have_link('Nova Transação')
-      expect(rendered).to have_link('Relatórios')
-    end
+      it 'displays dashboard link' do
+        expect(rendered).to have_link('Dashboard')
+      end
 
-    it 'displays user profile dropdown' do
-      expect(rendered).to have_content(user.profile.first_name)
-    end
+      it 'displays finances dropdown' do
+        expect(rendered).to have_content('Finanças')
+      end
 
-    it 'displays user profile dropdown items' do
-      expect(rendered).to have_link('Meu Perfil')
-      expect(rendered).to have_link('Configurações')
-      expect(rendered).to have_content('Sair')
-    end
+      it 'displays finances dropdown items' do
+        expect(rendered).to have_link('Todas as Transações')
+        expect(rendered).to have_link('Nova Transação')
+        expect(rendered).to have_link('Relatórios')
+      end
 
-    it 'does not display login button' do
-      expect(rendered).not_to have_link('Entrar')
-    end
+      it 'displays user profile dropdown' do
+        expect(rendered).to have_content(user.profile.first_name)
+      end
 
-    it 'does not display sign up button' do
-      expect(rendered).not_to have_link('Cadastrar')
+      it 'displays user profile dropdown items' do
+        expect(rendered).to have_link('Meu Perfil')
+        expect(rendered).to have_link('Configurações')
+        expect(rendered).to have_content('Sair')
+      end
+
+      it 'does not display login button' do
+        expect(rendered).not_to have_link('Entrar')
+      end
+
+      it 'does not display sign up button' do
+        expect(rendered).not_to have_link('Cadastrar')
+      end
     end
   end
 end
