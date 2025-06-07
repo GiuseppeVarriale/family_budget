@@ -1,0 +1,71 @@
+<!-- Modal para Adicionar Receita -->
+<div class="modal fade" id="incomeModal" tabindex="-1" aria-labelledby="incomeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="incomeModalLabel">
+          <i class="fas fa-plus-circle"></i> Adicionar Receita
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with model: [@current_user.family, Transaction.new], url: transactions_path, local: true, html: { class: "transaction-form" } do |form| %>
+          <%= form.hidden_field :transaction_type, value: "income" %>
+
+          <div class="mb-3">
+            <%= form.label :description, "Descrição", class: "form-label" %>
+            <%= form.text_field :description, class: "form-control", placeholder: "Ex: Salário, Freelance, etc." %>
+            <% if @transaction&.errors&.key?(:description) %>
+              <div class="invalid-feedback d-block">
+                <%= @transaction.errors.full_messages_for(:description).join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :amount, "Valor (R$)", class: "form-label" %>
+            <%= form.number_field :amount, step: 0.01, min: 0, class: "form-control", placeholder: "0,00" %>
+            <% if @transaction&.errors&.key?(:amount) %>
+              <div class="invalid-feedback d-block">
+                <%= @transaction.errors.full_messages_for(:amount).join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :transaction_date, "Data", class: "form-label" %>
+            <%= form.date_field :transaction_date, class: "form-control", value: Date.current %>
+            <% if @transaction&.errors&.key?(:transaction_date) %>
+              <div class="invalid-feedback d-block">
+                <%= @transaction.errors.full_messages_for(:transaction_date).join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :category_id, "Categoria", class: "form-label" %>
+            <div class="d-flex align-items-center">
+              <%= form.select :category_id,
+                  Category.income.map { |c| [c.name, c.id, { 'data-description' => c.description }] },
+                  { prompt: "Selecione uma categoria" },
+                  { class: "form-select", id: "income_category_select" } %>
+              <span class="ms-2" id="income_category_tooltip" style="display: none;">
+                <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right" title=""></i>
+              </span>
+            </div>
+            <% if @transaction&.errors&.key?(:category_id) || @transaction&.errors&.key?(:category) %>
+              <div class="invalid-feedback d-block">
+                <%= (@transaction.errors.full_messages_for(:category_id) + @transaction.errors.full_messages_for(:category)).join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <%= form.submit "Adicionar Receita", class: "btn btn-success" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

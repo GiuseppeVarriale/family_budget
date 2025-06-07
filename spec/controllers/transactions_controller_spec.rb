@@ -95,10 +95,11 @@ RSpec.describe TransactionsController, type: :controller do
         }.not_to change(Transaction, :count)
       end
 
-      it 'redirects to dashboard with error' do
+      it 'renders dashboard with error' do
         post :create, params: { transaction: invalid_attributes }
-        expect(response).to redirect_to(dashboard_path)
-        expect(flash[:alert]).to include('Erro ao criar transação')
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to render_template('dashboard/index')
+        expect(assigns(:transaction).errors).to be_present
       end
     end
   end

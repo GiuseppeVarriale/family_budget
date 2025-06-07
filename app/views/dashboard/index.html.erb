@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-4">
       <div class="card text-white bg-danger">
         <div class="card-header">
@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-4">
       <div class="card text-white <%= @current_month_balance >= 0 ? 'bg-primary' : 'bg-warning' %>">
         <div class="card-header">
@@ -73,7 +73,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-6">
       <div class="card">
         <div class="card-header">
@@ -90,152 +90,8 @@
   </div>
 </div>
 
-<!-- Modal para Adicionar Receita -->
-<div class="modal fade" id="incomeModal" tabindex="-1" aria-labelledby="incomeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="incomeModalLabel">
-          <i class="fas fa-plus-circle"></i> Adicionar Receita
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <%= form_with model: [@current_user.family, Transaction.new], url: transactions_path, local: true, html: { class: "transaction-form" } do |form| %>
-          <%= form.hidden_field :transaction_type, value: "income" %>
-          
-          <div class="mb-3">
-            <%= form.label :description, "Descrição", class: "form-label" %>
-            <%= form.text_field :description, class: "form-control", placeholder: "Ex: Salário, Freelance, etc." %>
-          </div>
-          
-          <div class="mb-3">
-            <%= form.label :amount, "Valor (R$)", class: "form-label" %>
-            <%= form.number_field :amount, step: 0.01, min: 0, class: "form-control", placeholder: "0,00" %>
-          </div>
-          
-          <div class="mb-3">
-            <%= form.label :transaction_date, "Data", class: "form-label" %>
-            <%= form.date_field :transaction_date, class: "form-control", value: Date.current %>
-          </div>
-          
-          <div class="mb-3">
-            <%= form.label :category_id, "Categoria", class: "form-label" %>
-            <%= form.select :category_id, 
-                options_from_collection_for_select(Category.income, :id, :name), 
-                { prompt: "Selecione uma categoria" }, 
-                { class: "form-select" } %>
-          </div>
-          
-          <div class="mb-3 form-check">
-            <%= form.check_box :is_recurring, class: "form-check-input" %>
-            <%= form.label :is_recurring, "Transação recorrente", class: "form-check-label" %>
-          </div>
-          
-          <div class="mb-3" id="recurring-frequency" style="display: none;">
-            <%= form.label :recurring_frequency, "Frequência", class: "form-label" %>
-            <%= form.select :recurring_frequency, 
-                options_for_select([
-                  ['Semanal', 'weekly'],
-                  ['Mensal', 'monthly'], 
-                  ['Trimestral', 'quarterly'],
-                  ['Anual', 'yearly']
-                ]), 
-                { prompt: "Selecione a frequência" }, 
-                { class: "form-select" } %>
-          </div>
-          
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <%= form.submit "Adicionar Receita", class: "btn btn-success" %>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Modais -->
+<%= render 'income_modal' %>
+<%= render 'expense_modal' %>
 
-<!-- Modal para Adicionar Despesa -->
-<div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="expenseModalLabel">
-          <i class="fas fa-minus-circle"></i> Adicionar Despesa
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <%= form_with model: [@current_user.family, Transaction.new], url: transactions_path, local: true, html: { class: "transaction-form" } do |form| %>
-          <%= form.hidden_field :transaction_type, value: "expense" %>
-          
-          <div class="mb-3">
-            <%= form.label :description, "Descrição", class: "form-label" %>
-            <%= form.text_field :description, class: "form-control", placeholder: "Ex: Supermercado, Conta de Luz, etc." %>
-          </div>
-          
-          <div class="mb-3">
-            <%= form.label :amount, "Valor (R$)", class: "form-label" %>
-            <%= form.number_field :amount, step: 0.01, min: 0, class: "form-control", placeholder: "0,00" %>
-          </div>
-          
-          <div class="mb-3">
-            <%= form.label :transaction_date, "Data", class: "form-label" %>
-            <%= form.date_field :transaction_date, class: "form-control", value: Date.current %>
-          </div>
-          
-          <div class="mb-3">
-            <%= form.label :category_id, "Categoria", class: "form-label" %>
-            <%= form.select :category_id, 
-                options_from_collection_for_select(Category.expense, :id, :name), 
-                { prompt: "Selecione uma categoria" }, 
-                { class: "form-select" } %>
-          </div>
-          
-          <div class="mb-3 form-check">
-            <%= form.check_box :is_recurring, class: "form-check-input" %>
-            <%= form.label :is_recurring, "Transação recorrente", class: "form-check-label" %>
-          </div>
-          
-          <div class="mb-3" id="recurring-frequency-expense" style="display: none;">
-            <%= form.label :recurring_frequency, "Frequência", class: "form-label" %>
-            <%= form.select :recurring_frequency, 
-                options_for_select([
-                  ['Semanal', 'weekly'],
-                  ['Mensal', 'monthly'], 
-                  ['Trimestral', 'quarterly'],
-                  ['Anual', 'yearly']
-                ]), 
-                { prompt: "Selecione a frequência" }, 
-                { class: "form-select" } %>
-          </div>
-          
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <%= form.submit "Adicionar Despesa", class: "btn btn-danger" %>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Toggle recurring frequency fields
-  const recurringCheckboxes = document.querySelectorAll('input[name="transaction[is_recurring]"]');
-  
-  recurringCheckboxes.forEach(function(checkbox) {
-    checkbox.addEventListener('change', function() {
-      const modal = this.closest('.modal');
-      const frequencyDiv = modal.querySelector('[id^="recurring-frequency"]');
-      
-      if (this.checked) {
-        frequencyDiv.style.display = 'block';
-      } else {
-        frequencyDiv.style.display = 'none';
-      }
-    });
-  });
-});
-</script>
