@@ -1,0 +1,140 @@
+@startuml Family Budget - Class Diagram
+
+!define PRIMARY_KEY <b><color:red>
+!define FOREIGN_KEY <color:blue>
+
+class User {
+  PRIMARY_KEY +id : Integer}
+  +email : String
+  +encrypted_password : String
+  +reset_password_token : String
+  +reset_password_sent_at : DateTime
+  +remember_created_at : DateTime
+  +created_at : DateTime
+  +updated_at : DateTime
+  --
+  +devise authentication modules
+  +validates_associated :profile
+}
+
+class Profile {
+  PRIMARY_KEY +id : Integer}
+  FOREIGN_KEY +user_id : Integer
+  +first_name : String
+  +last_name : String
+  +phone : String
+  +birth_date : Date
+  +created_at : DateTime
+  +updated_at : DateTime
+  --
+  +full_name() : String
+  +validates :first_name, :last_name
+  -strip_names()
+}
+
+class Family {
+  PRIMARY_KEY +id : Integer}
+  FOREIGN_KEY +user_id : Integer
+  +name : String
+  +description : String
+  +created_at : DateTime
+  +updated_at : DateTime
+  --
+  +total_income() : Decimal
+  +total_expenses() : Decimal
+  +balance() : Decimal
+  +transactions_for_period(start_date, end_date)
+  +validates :name
+}
+
+class Transaction {
+  PRIMARY_KEY +id : Integer}
+  FOREIGN_KEY +family_id : Integer
+  FOREIGN_KEY +category_id : Integer
+  +description : String
+  +amount : Decimal
+  +transaction_date : Date
+  +status : Enum
+  +transaction_type : Enum
+  +is_recurring : Boolean
+  +recurring_frequency : Enum
+  +is_approximate : Boolean
+  +created_at : DateTime
+  +updated_at : DateTime
+  --
+  +formatted_amount() : String
+  +next_occurrence_date() : Date
+  +can_be_cancelled?() : Boolean
+  +can_be_paid?() : Boolean
+  +mark_as_paid!()
+  +cancel!()
+  +to_s() : String
+}
+
+class Category {
+  PRIMARY_KEY +id : Integer}
+  +name : String
+  +description : String
+  +category_type : Enum
+  +created_at : DateTime
+  +updated_at : DateTime
+  --
+  +to_s() : String
+  +validates :name, :description, :category_type
+}
+
+enum TransactionStatus {
+  pending
+  paid
+  cancelled
+}
+
+enum TransactionType {
+  income
+  expense
+}
+
+enum RecurringFrequency {
+  weekly
+  monthly
+  quarterly
+  yearly
+}
+
+enum CategoryType {
+  income
+  expense
+}
+
+' Relationships
+User ||--|| Profile : has_one
+User ||--|| Family : has_one
+Family ||--o{ Transaction : has_many
+Category ||--o{ Transaction : has_many
+
+' Dependencies
+Transaction ..> TransactionStatus : uses
+Transaction ..> TransactionType : uses
+Transaction ..> RecurringFrequency : uses
+Category ..> CategoryType : uses
+
+' Notes
+note right of User
+  Uses Devise for authentication
+  Main user of the system
+end note
+
+note right of Transaction
+  Core entity for financial tracking
+  Uses Enumerize gem for enums
+  Contains business logic for
+  recurring transactions
+end note
+
+note right of Category
+  Categorizes transactions
+  Can be income or expense type
+  Shared across transactions
+end note
+
+@enduml
