@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '~> 7.2.2', '>= 7.2.2.1'
 
 gem 'bootstrap', '~> 5.3.1'
+gem 'chartkick'
 
 gem 'dartsass-sprockets'
 gem 'devise-i18n'
