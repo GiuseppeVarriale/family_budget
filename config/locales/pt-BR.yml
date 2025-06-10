@@ -3,6 +3,8 @@ pt-BR:
     models:
       profile: Perfil
       user: Usuário
+      transaction: Transação
+      category: Categoria
     attributes:
       profile:
         first_name: Nome
@@ -13,6 +15,20 @@ pt-BR:
         password: Senha
         password_confirmation: Confirme a senha
         current_password: Senha atual
+      transaction:
+        amount: Valor
+        description: Descrição
+        transaction_date: Data
+        category: Categoria
+        category_id: Categoria ID
+        transaction_type: Tipo de transação
+        status: Status
+        recurring_frequency: Frequência
+        is_recurring: Transação recorrente
+      category:
+        name: Nome
+        description: Descrição
+        category_type: Tipo
     errors:
       messages:
         record_invalid: "A validação falhou: %{errors}"
@@ -21,7 +37,37 @@ pt-BR:
         invalid: não é válido
         too_short: é muito curta (mínimo de %{count} caracteres)
         confirmation: não confere com a senha
+        required: é obrigatório
+        not_a_number: deve ser um número
+        greater_than: deve ser maior que %{count}
       models:
+        transaction:
+          attributes:
+            amount:
+              blank: não pode ficar em branco
+              not_a_number: deve ser um número válido
+              greater_than: deve ser maior que zero
+            description:
+              blank: não pode ficar em branco
+              too_short: é muito curta (mínimo de %{count} caracteres)
+              too_long: é muito longa (máximo de %{count} caracteres)
+            transaction_date:
+              blank: não pode ficar em branco
+            category:
+              blank: deve ser selecionada
+              required: é obrigatória
+            category_id:
+              blank: deve ser selecionada
+              required: é obrigatória
+            transaction_type:
+              blank: não pode ficar em branco
+              required: é obrigatório
+            status:
+              blank: não pode ficar em branco
+              required: é obrigatório
+            recurring_frequency:
+              blank: não pode ficar em branco quando a transação é recorrente
+              required: é obrigatória para transações recorrentes
         profile:
           attributes:
             first_name:

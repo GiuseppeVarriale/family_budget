@@ -1,0 +1,104 @@
+<div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="expenseModalLabel">
+          <i class="fas fa-minus-circle"></i> Adicionar Despesa
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with model: [@current_user.family, Transaction.new], url: transactions_path, local: true, html: { class: "transaction-form" } do |form| %>
+          <%= form.hidden_field :transaction_type, value: "expense" %>
+
+          <div class="mb-3">
+            <%= form.label :description, "Descrição", class: "form-label" %>
+            <%= form.text_field :description, class: "form-control", placeholder: "Ex: Supermercado, Conta de Luz, etc." %>
+            <% if @transaction&.errors&.key?(:description) %>
+              <div class="invalid-feedback d-block">
+                <%= @transaction.errors.full_messages_for(:description).join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :amount, "Valor (R$)", class: "form-label" %>
+            <%= form.number_field :amount, step: 0.01, min: 0, class: "form-control", placeholder: "0,00" %>
+            <% if @transaction&.errors&.key?(:amount) %>
+              <div class="invalid-feedback d-block">
+                <%= @transaction.errors.full_messages_for(:amount).join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :transaction_date, "Data", class: "form-label" %>
+            <%= form.date_field :transaction_date, class: "form-control", value: Date.current %>
+            <% if @transaction&.errors&.key?(:transaction_date) %>
+              <div class="invalid-feedback d-block">
+                <%= @transaction.errors.full_messages_for(:transaction_date).join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :category_id, "Categoria", class: "form-label" %>
+            <div class="d-flex align-items-center">
+              <%= form.select :category_id,
+                  Category.expense.map { |c| [c.name, c.id, { 'data-description' => c.description }] },
+                  { prompt: "Selecione uma categoria" },
+                  { class: "form-select", id: "expense_category_select" } %>
+              <span class="ms-2" id="expense_category_tooltip" style="display: none;">
+                <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right" title=""></i>
+              </span>
+            </div>
+            <% if @transaction&.errors&.key?(:category_id) || @transaction&.errors&.key?(:category) %>
+              <div class="invalid-feedback d-block">
+                <%= (@transaction.errors.full_messages_for(:category_id) + @transaction.errors.full_messages_for(:category)).join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3 form-check">
+            <%= form.check_box :is_recurring, class: "form-check-input", id: "expense_recurring_checkbox" %>
+            <%= form.label :is_recurring, "Transação recorrente", class: "form-check-label" %>
+            <small class="form-text text-muted d-block">
+              Marque esta opção para despesas que se repetem automaticamente (ex: aluguel, contas mensais).
+            </small>
+          </div>
+
+          <div class="mb-3" id="recurring-frequency-expense" style="display: none;">
+            <%= form.label :recurring_frequency, "Frequência", class: "form-label" %>
+            <%= form.select :recurring_frequency,
+                options_for_select([
+                  ['Semanal', 'weekly'],
+                  ['Mensal', 'monthly'],
+                  ['Trimestral', 'quarterly'],
+                  ['Anual', 'yearly']
+                ]),
+                { prompt: "Selecione a frequência" },
+                { class: "form-select" } %>
+            <% if @transaction&.errors&.key?(:recurring_frequency) %>
+              <div class="invalid-feedback d-block">
+                <%= @transaction.errors.full_messages_for(:recurring_frequency).join(', ') %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3 form-check">
+            <%= form.check_box :is_approximate, class: "form-check-input", id: "expense_approximate_checkbox" %>
+            <%= form.label :is_approximate, "Valor aproximado", class: "form-check-label" %>
+            <small class="form-text text-muted d-block">
+              Marque esta opção quando o valor não for exato (ex: estimativas, valores variáveis).
+            </small>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <%= form.submit "Adicionar Despesa", class: "btn btn-danger" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

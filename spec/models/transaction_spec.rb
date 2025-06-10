@@ -21,7 +21,7 @@ RSpec.describe Transaction, type: :model do
       it 'validates presence of recurring_frequency' do
         transaction.recurring_frequency = nil
         expect(transaction).to_not be_valid
-        expect(transaction.errors[:recurring_frequency]).to include('não pode ficar em branco')
+        expect(transaction.errors[:recurring_frequency]).to include('não pode ficar em branco quando a transação é recorrente')
       end
     end
 
