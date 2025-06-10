@@ -34,4 +34,34 @@ class Family < ApplicationRecord
   def paid_transactions
     transactions.paid
   end
+
+  def current_month_expenses_by_category
+    expenses_by_category(Date.current.beginning_of_month, Date.current.end_of_month)
+  end
+
+  def expenses_by_category(start_date = nil, end_date = nil)
+    expense_transactions = if start_date && end_date
+                             transactions.expense.for_period(start_date, end_date)
+                           else
+                             transactions.expense
+                           end
+
+    total_expenses_amount = expense_transactions.sum(:amount)
+    return [] if total_expenses_amount.zero?
+
+    expense_transactions
+      .joins(:category)
+      .group('categories.name')
+      .sum(:amount)
+      .map do |category_name, amount|
+        percentage = (amount / total_expenses_amount * 100).round(1)
+        {
+          category: category_name,
+          amount: amount,
+          percentage: percentage,
+          formatted_amount: "R$ #{amount.to_f.to_s.gsub('.', ',')}"
+        }
+      end
+      .sort_by { |data| -data[:amount] }
+  end
 end

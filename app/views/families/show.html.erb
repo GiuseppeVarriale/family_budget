@@ -33,7 +33,7 @@
               <dd class="col-sm-9"><%= @family.description %></dd>
             <% end %>
             <dt class="col-sm-3">Criada em:</dt>
-            <dd class="col-sm-9"><%= @family.created_at.strftime("%d/%m/%Y às %H:%M") %></dd>
+            <dd class="col-sm-9"><%= formatted_datetime(@family.created_at) %></dd>
           </dl>
         </div>
       </div>

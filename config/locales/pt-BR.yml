@@ -1,4 +1,66 @@
 pt-BR:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d de %B"
+      long: "%d de %B de %Y"
+    day_names:
+      - domingo
+      - segunda-feira
+      - terça-feira
+      - quarta-feira
+      - quinta-feira
+      - sexta-feira
+      - sábado
+    abbr_day_names:
+      - dom
+      - seg
+      - ter
+      - qua
+      - qui
+      - sex
+      - sáb
+    month_names:
+      -
+      - janeiro
+      - fevereiro
+      - março
+      - abril
+      - maio
+      - junho
+      - julho
+      - agosto
+      - setembro
+      - outubro
+      - novembro
+      - dezembro
+    abbr_month_names:
+      -
+      - jan
+      - fev
+      - mar
+      - abr
+      - mai
+      - jun
+      - jul
+      - ago
+      - set
+      - out
+      - nov
+      - dez
+    order:
+      - :day
+      - :month
+      - :year
+
+  time:
+    formats:
+      default: "%a, %d de %B de %Y, %H:%M:%S %z"
+      short: "%d de %B, %H:%M"
+      long: "%A, %d de %B de %Y, %H:%M"
+    am: ''
+    pm: ''
+
   activerecord:
     models:
       profile: Perfil
@@ -108,3 +170,26 @@ pt-BR:
       update:
         notice: Perfil atualizado com sucesso.
       submit: Atualizar Perfil
+
+  dashboard:
+    index:
+      title: Dashboard de Orçamento Familiar
+      current_month_income: Receitas do Mês
+      current_month_expenses: Despesas do Mês
+      current_month_balance: Saldo do Mês
+      add_transaction: Adicionar Transação
+      add_income: Adicionar Receita
+      add_expense: Adicionar Despesa
+      expense_distribution_by_category: Distribuição de Despesas por Categoria
+      expense_details_by_category: Detalhes das Despesas por Categoria
+      no_expenses_found: Nenhuma despesa encontrada
+      add_expenses_message: Adicione despesas para visualizar a distribuição por categoria.
+      add_first_expense: Adicionar Primeira Despesa
+      total_expenses: Total de despesas
+
+  common:
+    today: hoje
+    yesterday: ontem
+    this_week: esta semana
+    this_month: este mês
+    this_year: este ano
