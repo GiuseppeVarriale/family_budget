@@ -64,4 +64,39 @@ class Family < ApplicationRecord
       end
       .sort_by { |data| -data[:amount] }
   end
+
+  # Pending transactions methods for dashboard widgets
+  def overdue_expenses
+    transactions.expense.pending.where('transaction_date < ?', Date.current)
+  end
+
+  def overdue_expenses_total
+    overdue_expenses.sum(:amount)
+  end
+
+  def pending_income
+    transactions.income.pending.where('transaction_date <= ?', Date.current)
+  end
+
+  def pending_income_total
+    pending_income.sum(:amount)
+  end
+
+  def upcoming_expenses(days = 15)
+    end_date = Date.current + days.days
+    transactions.expense.pending.where(transaction_date: Date.current..end_date)
+  end
+
+  def upcoming_expenses_total(days = 15)
+    upcoming_expenses(days).sum(:amount)
+  end
+
+  def upcoming_income(days = 15)
+    end_date = Date.current + days.days
+    transactions.income.pending.where(transaction_date: Date.current..end_date)
+  end
+
+  def upcoming_income_total(days = 15)
+    upcoming_income(days).sum(:amount)
+  end
 end

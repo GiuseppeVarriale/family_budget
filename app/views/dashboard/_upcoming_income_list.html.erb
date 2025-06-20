@@ -1,0 +1,46 @@
+<% if @upcoming_income.any? %>
+  <div class="list-group list-group-flush">
+    <% @upcoming_income.each do |transaction| %>
+      <div class="list-group-item transaction-item upcoming-income px-0 py-2">
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="flex-grow-1 me-2">
+            <h6 class="mb-1 small text-truncate" title="<%= transaction.description %>">
+              <%= transaction.description %>
+            </h6>
+            <small class="text-muted d-block">
+              <i class="fas fa-tag"></i> <%= transaction.category.name %>
+            </small>
+            <small class="text-success">
+              <i class="fas fa-calendar-alt"></i>
+              <% transaction_date = transaction.transaction_date.is_a?(Date) ? transaction.transaction_date : transaction.transaction_date.to_date %>
+              <%= l(transaction_date, format: :widget) %>
+              <% if transaction_date == Date.current %>
+                (hoje)
+              <% elsif transaction_date > Date.current %>
+                (em <%= time_ago_in_words(transaction.transaction_date) %>)
+              <% end %>
+            </small>
+          </div>
+          <div class="text-end">
+            <span class="badge bg-success">
+              R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
+            </span>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @upcoming_income_total_count > 10 %>
+    <div class="text-center mt-2">
+      <small class="text-muted">
+        Mostrando 10 de <%= @upcoming_income_total_count %> transações
+      </small>
+      <br>
+      <%= link_to "Ver todas", transactions_path(status: 'pending', transaction_type: 'income', upcoming: '15'),
+                  class: "btn btn-sm btn-outline-success mt-1" %>
+    </div>
+  <% end %>
+<% else %>
+  <p class="text-muted text-center small mb-0">Nenhuma receita encontrada para os próximos 15 dias.</p>
+<% end %>

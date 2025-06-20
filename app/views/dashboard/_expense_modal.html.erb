@@ -8,7 +8,7 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <%= form_with model: [@current_user.family, Transaction.new], url: transactions_path, local: true, html: { class: "transaction-form" } do |form| %>
+        <%= form_with model: [@family, Transaction.new], url: transactions_path, local: true, html: { class: "transaction-form" } do |form| %>
           <%= form.hidden_field :transaction_type, value: "expense" %>
 
           <div class="mb-3">

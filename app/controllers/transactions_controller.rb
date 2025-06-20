@@ -7,8 +7,22 @@ class TransactionsController < ApplicationController
   def index
     @transactions = current_user.family.transactions
                                 .includes(:category)
-                                .order(transaction_date: :desc)
-                                .limit(50)
+
+    # Apply filters based on params
+    @transactions = @transactions.where(status: params[:status]) if params[:status].present?
+    @transactions = @transactions.where(transaction_type: params[:transaction_type]) if params[:transaction_type].present?
+
+    # Special filters for dashboard widgets
+    if params[:overdue] == 'true'
+      @transactions = @transactions.where('transaction_date < ?', Date.current)
+    elsif params[:upcoming].present?
+      days = params[:upcoming].to_i
+      end_date = Date.current + days.days
+      @transactions = @transactions.where(transaction_date: Date.current..end_date)
+    end
+
+    @transactions = @transactions.order(transaction_date: :desc)
+                                 .limit(50)
   end
 
   def show; end

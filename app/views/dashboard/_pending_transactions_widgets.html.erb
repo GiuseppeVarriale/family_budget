@@ -1,0 +1,163 @@
+<div class="col-md-3">
+  <div class="sticky-top" style="top: 20px;">
+    <!-- Overdue Expenses Widget -->
+    <div class="card widget-card mb-3 border-danger">
+      <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+        <div>
+          <i class="fas fa-exclamation-triangle"></i>
+          <strong>Despesas Vencidas</strong>
+        </div>
+        <% if @overdue_expenses_count > 0 %>
+          <button class="btn btn-sm btn-outline-light widget-expand-btn"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#overdue-expenses-list"
+                  aria-expanded="false"
+                  aria-controls="overdue-expenses-list">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <% if @overdue_expenses_count > 0 %>
+          <div class="text-center">
+            <h5 class="text-danger mb-1"><%= @overdue_expenses_count %> transaç<%= @overdue_expenses_count > 1 ? 'ões' : 'ão' %></h5>
+            <h6 class="text-muted">R$ <%= number_with_delimiter(@overdue_expenses_total, delimiter: '.', separator: ',') %></h6>
+          </div>
+          <div class="collapse mt-3" id="overdue-expenses-list">
+            <div class="border-top pt-2">
+              <div class="widget-content" id="overdue-expenses-content">
+                <%= render 'dashboard/overdue_expenses_list' %>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="text-center text-muted empty-state">
+            <i class="fas fa-check-circle fa-2x mb-2"></i>
+            <p class="mb-0 small">Nenhuma despesa vencida</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Pending Income Widget -->
+    <div class="card widget-card mb-3 border-warning">
+      <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
+        <div>
+          <i class="fas fa-clock"></i>
+          <strong>Receitas em Atraso</strong>
+        </div>
+        <% if @pending_income_count > 0 %>
+          <button class="btn btn-sm btn-outline-light widget-expand-btn"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#pending-income-list"
+                  aria-expanded="false"
+                  aria-controls="pending-income-list">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <% if @pending_income_count > 0 %>
+          <div class="text-center">
+            <h5 class="text-warning mb-1"><%= @pending_income_count %> transaç<%= @pending_income_count > 1 ? 'õe' : 'ão' %></h5>
+            <h6 class="text-muted">R$ <%= number_with_delimiter(@pending_income_total, delimiter: '.', separator: ',') %></h6>
+          </div>
+          <div class="collapse mt-3" id="pending-income-list">
+            <div class="border-top pt-2">
+              <div class="widget-content" id="pending-income-content">
+                <%= render 'dashboard/pending_income_list' %>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="text-center text-muted empty-state">
+            <i class="fas fa-check-circle fa-2x mb-2"></i>
+            <p class="mb-0 small">Nenhuma receita em atraso</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Upcoming Expenses Widget -->
+    <div class="card widget-card mb-3 border-info">
+      <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+        <div>
+          <i class="fas fa-calendar-alt"></i>
+          <strong>Despesas - Próximos 15 dias</strong>
+        </div>
+        <% if @upcoming_expenses_count > 0 %>
+          <button class="btn btn-sm btn-outline-light widget-expand-btn"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#upcoming-expenses-list"
+                  aria-expanded="false"
+                  aria-controls="upcoming-expenses-list">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <% if @upcoming_expenses_count > 0 %>
+          <div class="text-center">
+            <h5 class="text-info mb-1"><%= @upcoming_expenses_count %> transaç<%= @upcoming_expenses_count > 1 ? 'õe' : 'ão' %></h5>
+            <h6 class="text-muted">R$ <%= number_with_delimiter(@upcoming_expenses_total, delimiter: '.', separator: ',') %></h6>
+          </div>
+          <div class="collapse mt-3" id="upcoming-expenses-list">
+            <div class="border-top pt-2">
+              <div class="widget-content" id="upcoming-expenses-content">
+                <%= render 'dashboard/upcoming_expenses_list' %>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="text-center text-muted empty-state">
+            <i class="fas fa-calendar-check fa-2x mb-2"></i>
+            <p class="mb-0 small">Nenhuma despesa nos próximos 15 dias</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Upcoming Income Widget -->
+    <div class="card widget-card mb-3 border-success">
+      <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <div>
+          <i class="fas fa-calendar-plus"></i>
+          <strong>Receitas - Próximos 15 dias</strong>
+        </div>
+        <% if @upcoming_income_count > 0 %>
+          <button class="btn btn-sm btn-outline-light widget-expand-btn"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#upcoming-income-list"
+                  aria-expanded="false"
+                  aria-controls="upcoming-income-list">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <% if @upcoming_income_count > 0 %>
+          <div class="text-center">
+            <h5 class="text-success mb-1"><%= @upcoming_income_count %> transaç<%= @upcoming_income_count > 1 ? 'õe' : 'ão' %></h5>
+            <h6 class="text-muted">R$ <%= number_with_delimiter(@upcoming_income_total, delimiter: '.', separator: ',') %></h6>
+          </div>
+          <div class="collapse mt-3" id="upcoming-income-list">
+            <div class="border-top pt-2">
+              <div class="widget-content" id="upcoming-income-content">
+                <%= render 'dashboard/upcoming_income_list' %>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="text-center text-muted empty-state">
+            <i class="fas fa-calendar-check fa-2x mb-2"></i>
+            <p class="mb-0 small">Nenhuma receita nos próximos 15 dias</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

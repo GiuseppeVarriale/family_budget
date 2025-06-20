@@ -1,19 +1,16 @@
-// Suprimir avisos de depreciação do Sass
 $color-function-deprecation-warnings: false;
 
 @import "bootstrap";
 @import "home";
+@import "dashboard_widgets";
 
-// Estilos personalizados da aplicação
 
-// Estilo para campos obrigatórios
 .form-label.required:after {
   content: " *";
   color: $danger;
   font-weight: bold;
 }
 
-// Highlight para campos com erro
 .is-invalid {
   border-color: $danger;
   &:focus {
@@ -21,7 +18,6 @@ $color-function-deprecation-warnings: false;
   }
 }
 
-// Estilos para o avatar do perfil
 .avatar-preview {
   width: 150px;
   height: 150px;
@@ -29,7 +25,7 @@ $color-function-deprecation-warnings: false;
   border: 2px solid #e0e0e0;
   border-radius: 50%;
   transition: all 0.3s ease;
-  
+
   &:hover {
     border-color: $primary;
     box-shadow: 0 0 10px rgba($primary, 0.5);
@@ -48,18 +44,17 @@ $color-function-deprecation-warnings: false;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background-color: #d0d0d0;
   }
 }
 
-// Melhorias nos formulários
 .card {
   border: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  
+
   &:hover {
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   }
@@ -72,7 +67,7 @@ $color-function-deprecation-warnings: false;
 
 .btn-primary {
   transition: all 0.3s ease;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
