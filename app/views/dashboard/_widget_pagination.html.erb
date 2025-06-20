@@ -1,0 +1,15 @@
+<!-- Widget Pagination Partial -->
+<div class="widget-pagination mt-2">
+  <%= will_paginate collection,
+      param_name: :page,
+      inner_window: 1,
+      outer_window: 0,
+      previous_label: '‹ Anterior',
+      next_label: 'Próxima ›',
+      class: 'pagination pagination-sm' %>
+
+  <small class="text-muted d-block text-center mt-1">
+    Mostrando <%= collection.offset + 1 %>-<%= collection.offset + collection.length %>
+    de <%= collection.respond_to?(:total_entries) ? collection.total_entries : total_count %> transações
+  </small>
+</div>

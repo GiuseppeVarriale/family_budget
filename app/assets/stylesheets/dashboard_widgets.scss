@@ -86,7 +86,7 @@
 }
 
 .pagination {
-  a, span {
+  a, em, span {
     display: block;
     padding: 0.25rem 0.5rem;
     margin-left: -1px;
@@ -158,5 +158,11 @@
       border-top-right-radius: 0.2rem;
       border-bottom-right-radius: 0.2rem;
     }
+  }
+}
+
+.widget-pagination {
+  .pagination {
+    justify-content: center;
   }
 }

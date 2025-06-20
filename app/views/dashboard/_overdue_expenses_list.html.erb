@@ -28,20 +28,9 @@
   </div>
 
   <!-- Paginação -->
-  <div class="text-center mt-2">
-    <%= will_paginate @overdue_expenses, 
-        param_name: :page,
-        inner_window: 1,
-        outer_window: 0,
-        class: "pagination pagination-sm justify-content-center mb-2",
-        previous_label: '<i class="fas fa-chevron-left"></i>'.html_safe,
-        next_label: '<i class="fas fa-chevron-right"></i>'.html_safe %>
-    
-    <small class="text-muted d-block">
-      Mostrando <%= @overdue_expenses.offset + 1 %>-<%= @overdue_expenses.offset + @overdue_expenses.length %> 
-      de <%= @overdue_expenses.respond_to?(:total_entries) ? @overdue_expenses.total_entries : @overdue_expenses_total_count %> transações
-    </small>
-  </div>
+  <%= render 'dashboard/widget_pagination',
+      collection: @overdue_expenses,
+      total_count: @overdue_expenses_total_count %>
 <% else %>
   <p class="text-muted text-center small mb-0">Nenhuma despesa vencida encontrada.</p>
 <% end %>

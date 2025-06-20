@@ -32,20 +32,9 @@
   </div>
 
   <!-- Paginação -->
-  <div class="text-center mt-2">
-    <%= will_paginate @pending_income, 
-        param_name: :page,
-        inner_window: 1,
-        outer_window: 0,
-        class: "pagination pagination-sm justify-content-center mb-2",
-        previous_label: '<i class="fas fa-chevron-left"></i>'.html_safe,
-        next_label: '<i class="fas fa-chevron-right"></i>'.html_safe %>
-    
-    <small class="text-muted d-block">
-      Mostrando <%= @pending_income.offset + 1 %>-<%= @pending_income.offset + @pending_income.length %> 
-      de <%= @pending_income.respond_to?(:total_entries) ? @pending_income.total_entries : @pending_income_total_count %> transações
-    </small>
-  </div>
+  <%= render 'dashboard/widget_pagination',
+      collection: @pending_income,
+      total_count: @pending_income_total_count %>
 <% else %>
   <p class="text-muted text-center small mb-0">Nenhuma receita pendente encontrada.</p>
 <% end %>
