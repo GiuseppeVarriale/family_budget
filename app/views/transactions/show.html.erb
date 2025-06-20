@@ -27,7 +27,7 @@
                 <dt class="col-sm-4">Status:</dt>
                 <dd class="col-sm-8">
                   <span class="badge bg-<%= @transaction.paid? ? 'success' : @transaction.pending? ? 'warning' : 'secondary' %>">
-                    <%= @transaction.status.humanize %>
+                    <%= @transaction.status.text %>
                   </span>
                 </dd>
               </dl>
@@ -57,7 +57,7 @@
                 <dt class="col-sm-4">Tipo:</dt>
                 <dd class="col-sm-8">
                   <span class="badge <%= @transaction.income? ? 'bg-success' : 'bg-danger' %>">
-                    <%= @transaction.transaction_type.humanize %>
+                    <%= @transaction.transaction_type.text %>
                   </span>
                 </dd>
               </dl>
@@ -68,7 +68,7 @@
                 <dd class="col-sm-8">
                   <% if @transaction.is_recurring? %>
                     <span class="badge bg-info">
-                      Sim - <%= @transaction.recurring_frequency.humanize %>
+                      Sim - <%= @transaction.recurring_frequency.text %>
                     </span>
                   <% else %>
                     <span class="badge bg-secondary">Não</span>

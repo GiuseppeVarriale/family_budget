@@ -56,10 +56,7 @@
                 <div class="mb-3">
                   <%= form.label :transaction_type, "Tipo", class: "form-label" %>
                   <%= form.select :transaction_type,
-                      options_for_select([
-                        ['Receita', 'income'],
-                        ['Despesa', 'expense']
-                      ], @transaction.transaction_type),
+                      options_for_select(Transaction.transaction_type.options, @transaction.transaction_type),
                       { prompt: "Selecione o tipo" },
                       { class: "form-select" } %>
                 </div>
@@ -71,11 +68,7 @@
                 <div class="mb-3">
                   <%= form.label :status, "Status", class: "form-label" %>
                   <%= form.select :status,
-                      options_for_select([
-                        ['Pendente', 'pending'],
-                        ['Pago', 'paid'],
-                        ['Cancelado', 'cancelled']
-                      ], @transaction.status),
+                      options_for_select(Transaction.status.options, @transaction.status),
                       { prompt: "Selecione o status" },
                       { class: "form-select" } %>
                 </div>
@@ -97,12 +90,7 @@
             <div class="mb-3" id="recurring-frequency-edit" style="<%= @transaction.is_recurring? ? '' : 'display: none;' %>">
               <%= form.label :recurring_frequency, "Frequência", class: "form-label" %>
               <%= form.select :recurring_frequency,
-                  options_for_select([
-                    ['Semanal', 'weekly'],
-                    ['Mensal', 'monthly'],
-                    ['Trimestral', 'quarterly'],
-                    ['Anual', 'yearly']
-                  ], @transaction.recurring_frequency),
+                  options_for_select(Transaction.recurring_frequency.options, @transaction.recurring_frequency),
                   { prompt: "Selecione a frequência" },
                   { class: "form-select" } %>
             </div>
