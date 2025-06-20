@@ -47,9 +47,9 @@
                 <div class="mb-3">
                   <%= form.label :category_id, "Categoria", class: "form-label" %>
                   <%= form.select :category_id,
-                      options_from_collection_for_select(Category.all, :id, :name, @transaction.category_id),
+                      category_select_options(@transaction.transaction_type, @transaction.category_id),
                       { prompt: "Selecione uma categoria" },
-                      { class: "form-select" } %>
+                      { class: "form-select", id: "category_select" } %>
                 </div>
               </div>
               <div class="col-md-6">
@@ -58,7 +58,8 @@
                   <%= form.select :transaction_type,
                       options_for_select(Transaction.transaction_type.options, @transaction.transaction_type),
                       { prompt: "Selecione o tipo" },
-                      { class: "form-select" } %>
+                      { class: "form-select", id: "transaction_type_select", disabled: true } %>
+                  <small class="form-text text-muted">O tipo não pode ser alterado. Para mudar o tipo, crie uma nova transação.</small>
                 </div>
               </div>
             </div>
@@ -96,7 +97,7 @@
             </div>
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-              <%= link_to 'Cancelar', @transaction, class: 'btn btn-secondary me-md-2' %>
+              <%= link_to 'Voltar', @transaction, class: 'btn btn-secondary me-md-2' %>
               <%= form.submit "Atualizar Transação", class: "btn btn-primary" %>
             </div>
           <% end %>
@@ -111,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const recurringCheckbox = document.querySelector('input[name="transaction[is_recurring]"]');
   const frequencyDiv = document.querySelector('#recurring-frequency-edit');
 
+  // Handle recurring checkbox
   if (recurringCheckbox) {
     recurringCheckbox.addEventListener('change', function() {
       if (this.checked) {
@@ -120,5 +122,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  // Note: Transaction type filtering is not needed here since:
+  // 1. The transaction type is disabled (read-only)
+  // 2. Categories are already filtered server-side based on the transaction's type
 });
 </script>

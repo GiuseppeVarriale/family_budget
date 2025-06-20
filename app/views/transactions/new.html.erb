@@ -45,20 +45,20 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="mb-3">
-                  <%= form.label :category_id, "Categoria", class: "form-label" %>
-                  <%= form.select :category_id,
-                      options_from_collection_for_select(Category.all, :id, :name),
-                      { prompt: "Selecione uma categoria" },
-                      { class: "form-select" } %>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
                   <%= form.label :transaction_type, "Tipo", class: "form-label" %>
                   <%= form.select :transaction_type,
                       options_for_select(Transaction.transaction_type.options),
                       { prompt: "Selecione o tipo" },
-                      { class: "form-select" } %>
+                      { class: "form-select", id: "transaction_type_select" } %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <%= form.label :category_id, "Categoria", class: "form-label" %>
+                  <%= form.select :category_id,
+                      all_category_options_with_data,
+                      { prompt: "Primeiro selecione o tipo" },
+                      { class: "form-select", id: "category_select", disabled: true } %>
                 </div>
               </div>
             </div>
@@ -95,7 +95,7 @@
             </div>
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-              <%= link_to 'Cancelar', dashboard_path, class: 'btn btn-secondary me-md-2' %>
+              <%= link_to 'Voltar', dashboard_path, class: 'btn btn-secondary me-md-2' %>
               <%= form.submit "Criar Transação", class: "btn btn-primary" %>
             </div>
           <% end %>
@@ -109,13 +109,50 @@
 document.addEventListener('DOMContentLoaded', function() {
   const recurringCheckbox = document.querySelector('input[name="transaction[is_recurring]"]');
   const frequencyDiv = document.querySelector('#recurring-frequency-new');
+  const transactionTypeSelect = document.getElementById('transaction_type_select');
+  const categorySelect = document.getElementById('category_select');
 
+  // Store all category options
+  const allCategoryOptions = Array.from(categorySelect.options);
+
+  // Handle recurring checkbox
   if (recurringCheckbox) {
     recurringCheckbox.addEventListener('change', function() {
       if (this.checked) {
         frequencyDiv.style.display = 'block';
       } else {
         frequencyDiv.style.display = 'none';
+      }
+    });
+  }
+
+  // Handle transaction type change to filter categories
+  if (transactionTypeSelect && categorySelect) {
+    transactionTypeSelect.addEventListener('change', function() {
+      const selectedType = this.value;
+
+      // Enable/disable category select based on type selection
+      if (selectedType) {
+        categorySelect.disabled = false;
+        categorySelect.querySelector('option[value=""]').text = "Selecione uma categoria";
+      } else {
+        categorySelect.disabled = true;
+        categorySelect.querySelector('option[value=""]').text = "Primeiro selecione o tipo";
+      }
+
+      // Clear current options except prompt
+      categorySelect.innerHTML = '';
+      categorySelect.appendChild(allCategoryOptions[0].cloneNode(true)); // Keep prompt option
+      categorySelect.value = ''; // Reset selection
+
+      // Filter and add matching categories
+      if (selectedType) {
+        allCategoryOptions.slice(1).forEach(function(option) {
+          const categoryType = option.getAttribute('data-category-type');
+          if (categoryType === selectedType) {
+            categorySelect.appendChild(option.cloneNode(true));
+          }
+        });
       }
     });
   }
