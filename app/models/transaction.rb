@@ -5,7 +5,7 @@ class Transaction < ApplicationRecord
   belongs_to :category
   belongs_to :family
 
-  enumerize :status, in: %i[pending paid cancelled], scope: :shallow, predicates: true
+  enumerize :status, in: %i[pending paid cancelled], default: :pending, scope: :shallow, predicates: true
   enumerize :recurring_frequency, in: %i[weekly monthly quarterly yearly], scope: :shallow
   enumerize :transaction_type, in: %i[income expense], scope: :shallow, predicates: true
 

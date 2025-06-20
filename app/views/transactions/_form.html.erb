@@ -32,7 +32,7 @@
       <div class="mb-3">
         <%= form.label :transaction_date, "Data", class: "form-label" %>
         <%= form.date_field :transaction_date, class: "form-control",
-            value: is_edit ? nil : Date.current %>
+            value: is_edit ? transaction.transaction_date : Date.current %>
       </div>
     </div>
   </div>
@@ -42,9 +42,13 @@
         <div class="mb-3">
           <%= form.label :transaction_type, "Tipo", class: "form-label" %>
           <%= form.select :transaction_type,
-              options_for_select(Transaction.transaction_type.options, is_edit ? transaction.transaction_type : nil),
-              { prompt: is_edit ? nil : "Selecione o tipo" },
-              { class: "form-select", disabled: is_edit } %>
+              Transaction.transaction_type.options,
+              { prompt: "Selecione o tipo" },
+              {
+                class: "form-select",
+                disabled: is_edit,
+                data: { "transaction-form-target": "transactionTypeSelect" }
+              } %>
               <% if is_edit %>
               <small class="form-text text-muted">O tipo não pode ser alterado. Para mudar o tipo, exclua esta transação e crie uma nova transação com o tipo desejado.</small>
               <% end %>
@@ -54,10 +58,15 @@
         <div class="mb-3">
           <%= form.label :category_id, "Categoria", class: "form-label" %>
           <%= form.select :category_id,
-              is_edit ? category_select_options(transaction.transaction_type, transaction.category_id) :
-                        options_for_select([["Selecione primeiro o tipo", "", { disabled: true }]]),
-              { prompt: "Selecione uma categoria" },
-              { class: "form-select", disabled: !is_edit } %>
+              is_edit ?
+                category_select_options(transaction.transaction_type, transaction.category_id) :
+                category_select_options(nil, nil, include_data_attributes: true),
+              { prompt: is_edit ? "Selecione uma categoria" : "Selecione Primeiro o Tipo" },
+              {
+                class: "form-select",
+                disabled: transaction.transaction_type.blank?,
+                data: { "transaction-form-target": "categorySelect" }
+              } %>
         </div>
       </div>
   </div>
