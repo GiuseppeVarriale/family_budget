@@ -70,12 +70,7 @@
           <div class="mb-3" id="recurring-frequency-expense" style="display: none;">
             <%= form.label :recurring_frequency, "Frequência", class: "form-label" %>
             <%= form.select :recurring_frequency,
-                options_for_select([
-                  ['Semanal', 'weekly'],
-                  ['Mensal', 'monthly'],
-                  ['Trimestral', 'quarterly'],
-                  ['Anual', 'yearly']
-                ]),
+                options_for_select(Transaction.recurring_frequency.options),
                 { prompt: "Selecione a frequência" },
                 { class: "form-select" } %>
             <% if @transaction&.errors&.key?(:recurring_frequency) %>
