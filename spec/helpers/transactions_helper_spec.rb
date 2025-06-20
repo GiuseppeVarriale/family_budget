@@ -37,26 +37,5 @@ RSpec.describe TransactionsHelper, type: :helper do
         end
       end
     end
-
-    describe '#all_category_options_with_data' do
-      it 'returns all categories with data attributes' do
-        result = helper.all_category_options_with_data
-
-        expect(result).to be_an(Array)
-        expect(result.length).to eq(2)
-
-        # Check income category
-        income_option = result.find { |option| option[0] == 'Salário' }
-        expect(income_option).to be_present
-        expect(income_option[1]).to eq(income_category.id)
-        expect(income_option[2]['data-category-type']).to eq('income')
-
-        # Check expense category
-        expense_option = result.find { |option| option[0] == 'Alimentação' }
-        expect(expense_option).to be_present
-        expect(expense_option[1]).to eq(expense_category.id)
-        expect(expense_option[2]['data-category-type']).to eq('expense')
-      end
-    end
   end
 end

@@ -9,14 +9,9 @@ module TransactionsHelper
                  end
 
     options = categories.map do |category|
-      [category.name, category.id, { 'data-category-type' => category.category_type }]
+      [category.name, category.id]
     end
 
     options_for_select(options, selected_category_id)
-  end
-
-  # Generate all category options with data attributes for JavaScript filtering
-  def all_category_options_with_data
-    Category.all.map { |c| [c.name, c.id, { 'data-category-type' => c.category_type }] }
   end
 end
