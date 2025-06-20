@@ -11,6 +11,7 @@ gem 'devise-i18n'
 
 gem 'devise'
 gem 'enumerize'
+gem 'will_paginate', '~> 4.0'
 gem 'jquery-rails'
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'

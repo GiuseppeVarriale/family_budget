@@ -1,7 +1,7 @@
 <% if @pending_income.any? %>
   <div class="list-group list-group-flush">
     <% @pending_income.each do |transaction| %>
-      <div class="list-group-item transaction-item pending px-0 py-2">
+      <%= link_to transaction_path(transaction), class: "list-group-item list-group-item-action transaction-item pending px-0 py-2", style: "text-decoration: none;" do %>
         <div class="d-flex justify-content-between align-items-start">
           <div class="flex-grow-1 me-2">
             <h6 class="mb-1 small text-truncate" title="<%= transaction.description %>">
@@ -22,25 +22,30 @@
             </small>
           </div>
           <div class="text-end">
-            <span class="badge bg-danger">
+            <span class="badge bg-warning">
               R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
             </span>
           </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 
-  <% if @pending_income_total_count > 10 %>
-    <div class="text-center mt-2">
-      <small class="text-muted">
-        Mostrando 10 de <%= @pending_income_total_count %> transações
-      </small>
-      <br>
-      <%= link_to "Ver todas", transactions_path(status: 'pending', transaction_type: 'income'),
-                  class: "btn btn-sm btn-outline-danger mt-1" %>
-    </div>
-  <% end %>
+  <!-- Paginação -->
+  <div class="text-center mt-2">
+    <%= will_paginate @pending_income, 
+        param_name: :page,
+        inner_window: 1,
+        outer_window: 0,
+        class: "pagination pagination-sm justify-content-center mb-2",
+        previous_label: '<i class="fas fa-chevron-left"></i>'.html_safe,
+        next_label: '<i class="fas fa-chevron-right"></i>'.html_safe %>
+    
+    <small class="text-muted d-block">
+      Mostrando <%= @pending_income.offset + 1 %>-<%= @pending_income.offset + @pending_income.length %> 
+      de <%= @pending_income.respond_to?(:total_entries) ? @pending_income.total_entries : @pending_income_total_count %> transações
+    </small>
+  </div>
 <% else %>
   <p class="text-muted text-center small mb-0">Nenhuma receita pendente encontrada.</p>
 <% end %>
