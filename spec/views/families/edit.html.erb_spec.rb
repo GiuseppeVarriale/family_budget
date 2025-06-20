@@ -33,9 +33,9 @@ RSpec.describe 'families/edit.html.erb', type: :view do
     expect(rendered).to have_button('Salvar Alterações')
   end
 
-  it 'has cancel link' do
+  it 'has back link' do
     render
-    expect(rendered).to have_link('Cancelar', href: family_path)
+    expect(rendered).to have_link('Voltar', href: family_path)
   end
 
   context 'when family has errors' do

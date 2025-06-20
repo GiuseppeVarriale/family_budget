@@ -38,7 +38,7 @@ RSpec.describe Transaction, type: :model do
   describe 'enumerize' do
     it { should enumerize(:status).in(:pending, :paid, :cancelled).with_default(:pending) }
     it { should enumerize(:recurring_frequency).in(:weekly, :monthly, :quarterly, :yearly) }
-    it { should enumerize(:transaction_type).in(:income, :expense).with_default(:expense) }
+    it { should enumerize(:transaction_type).in(:income, :expense) }
   end
 
   describe 'scopes' do

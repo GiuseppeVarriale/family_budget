@@ -7,7 +7,7 @@ class Transaction < ApplicationRecord
 
   enumerize :status, in: %i[pending paid cancelled], default: :pending, scope: :shallow, predicates: true
   enumerize :recurring_frequency, in: %i[weekly monthly quarterly yearly], scope: :shallow
-  enumerize :transaction_type, in: %i[income expense], default: :expense, scope: :shallow, predicates: true
+  enumerize :transaction_type, in: %i[income expense], scope: :shallow, predicates: true
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :description, presence: true, length: { minimum: 2, maximum: 200 }
