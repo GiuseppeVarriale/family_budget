@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   resource :profile, only: %i[edit update]
   resource :family, only: %i[show new create edit update destroy]
   get 'dashboard', to: 'dashboard#index', as: 'dashboard'
+  get 'dashboard/load_overdue_expenses', to: 'dashboard#load_overdue_expenses', as: 'load_overdue_expenses'
+  get 'dashboard/load_pending_income', to: 'dashboard#load_pending_income', as: 'load_pending_income'
+  get 'dashboard/load_upcoming_expenses', to: 'dashboard#load_upcoming_expenses', as: 'load_upcoming_expenses'
+  get 'dashboard/load_upcoming_income', to: 'dashboard#load_upcoming_income', as: 'load_upcoming_income'
   resources :transactions
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

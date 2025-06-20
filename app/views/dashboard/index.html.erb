@@ -1,53 +1,59 @@
 <% content_for :title, "Dashboard" %>
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
   <div class="row">
     <div class="col-md-12">
       <h1 class="mb-4"><%= t('.title') %></h1>
     </div>
   </div>
 
-  <!-- Resumo Financeiro do Mês Atual -->
-  <div class="row mb-4">
-    <div class="col-md-4">
-      <div class="card text-white bg-success">
-        <div class="card-header">
-          <i class="fas fa-arrow-up"></i> <%= t('.current_month_income') %>
+  <div class="row">
+    <!-- Widgets de Transações Pendentes - Coluna da Esquerda -->
+    <%= render 'dashboard/pending_transactions_widgets' %>
+
+    <!-- Conteúdo Principal - Coluna da Direita -->
+    <div class="col-md-9">
+      <!-- Resumo Financeiro do Mês Atual -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card text-white bg-success">
+            <div class="card-header">
+              <i class="fas fa-arrow-up"></i> <%= t('.current_month_income') %>
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">R$ <%= number_with_delimiter(@current_month_income, delimiter: '.', separator: ',') %></h4>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
-          <h4 class="card-title">R$ <%= number_with_delimiter(@current_month_income, delimiter: '.', separator: ',') %></h4>
+
+        <div class="col-md-4">
+          <div class="card text-white bg-danger">
+            <div class="card-header">
+              <i class="fas fa-arrow-down"></i> <%= t('.current_month_expenses') %>
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">R$ <%= number_with_delimiter(@current_month_expenses, delimiter: '.', separator: ',') %></h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card text-white <%= @current_month_balance >= 0 ? 'bg-primary' : 'bg-warning' %>">
+            <div class="card-header">
+              <i class="fas fa-balance-scale"></i> <%= t('.current_month_balance') %>
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">R$ <%= number_with_delimiter(@current_month_balance, delimiter: '.', separator: ',') %></h4>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="col-md-4">
-      <div class="card text-white bg-danger">
-        <div class="card-header">
-          <i class="fas fa-arrow-down"></i> <%= t('.current_month_expenses') %>
-        </div>
-        <div class="card-body">
-          <h4 class="card-title">R$ <%= number_with_delimiter(@current_month_expenses, delimiter: '.', separator: ',') %></h4>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card text-white <%= @current_month_balance >= 0 ? 'bg-primary' : 'bg-warning' %>">
-        <div class="card-header">
-          <i class="fas fa-balance-scale"></i> <%= t('.current_month_balance') %>
-        </div>
-        <div class="card-body">
-          <h4 class="card-title">R$ <%= number_with_delimiter(@current_month_balance, delimiter: '.', separator: ',') %></h4>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Botões de Ação -->
-  <div class="row mb-4">
-    <div class="col-md-12">
-      <h3><%= t('.add_transaction') %></h3>
-      <div class="btn-group" role="group">
+      <!-- Botões de Ação -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <h3><%= t('.add_transaction') %></h3>
+          <div class="btn-group" role="group">
         <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#incomeModal">
           <i class="fas fa-plus-circle"></i> <%= t('.add_income') %>
         </button>
@@ -58,116 +64,118 @@
     </div>
   </div>
 
-  <!-- Gráfico de Despesas por Categoria -->
-  <div class="row">
-    <div class="col-md-6 d-flex">
-      <div class="card flex-fill">
-        <div class="card-header">
-          <h5><i class="fas fa-chart-pie"></i> <%= t('.expense_distribution_by_category') %> - <%= formatted_month_year %></h5>
-        </div>
-        <div class="card-body d-flex flex-column" style="min-height: 500px;">
-          <% if @expenses_by_category.any? %>
-            <div class="flex-grow-1 d-flex align-items-center justify-content-center">
-              <% chart_data = @expenses_by_category.map { |data| [data[:category], data[:amount].to_f] } %>
-              <%= pie_chart chart_data,
-                  height: "350px",
-                  colors: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"],
-                  prefix: "R$ ",
-                  thousands: ".",
-                  decimal: ",",
-                  library: {
-                    plugins: {
-                      legend: {
-                        position: "bottom",
-                        labels: {
-                          padding: 20,
-                          font: {
-                            size: 12
+      <!-- Gráfico de Despesas por Categoria -->
+      <div class="row">
+        <div class="col-md-6 d-flex">
+          <div class="card flex-fill">
+            <div class="card-header">
+              <h5><i class="fas fa-chart-pie"></i> <%= t('.expense_distribution_by_category') %> - <%= formatted_month_year %></h5>
+            </div>
+            <div class="card-body d-flex flex-column" style="min-height: 500px;">
+              <% if @expenses_by_category.any? %>
+                <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                  <% chart_data = @expenses_by_category.map { |data| [data[:category], data[:amount].to_f] } %>
+                  <%= pie_chart chart_data,
+                      height: "350px",
+                      colors: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"],
+                      prefix: "R$ ",
+                      thousands: ".",
+                      decimal: ",",
+                      library: {
+                        plugins: {
+                          legend: {
+                            position: "bottom",
+                            labels: {
+                              padding: 20,
+                              font: {
+                                size: 12
+                              }
+                            }
+                          },
+                          tooltip: {
+                            callbacks: {
+                              label: "function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const dataset = context.dataset;
+                                const total = dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                const formattedValue = 'R$ ' + value.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                                return label + ': ' + formattedValue + ' (' + percentage + '%)';
+                              }"
+                            }
                           }
                         }
-                      },
-                      tooltip: {
-                        callbacks: {
-                          label: "function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed;
-                            const dataset = context.dataset;
-                            const total = dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            const formattedValue = 'R$ ' + value.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-                            return label + ': ' + formattedValue + ' (' + percentage + '%)';
-                          }"
-                        }
-                      }
-                    }
-                  } %>
+                      } %>
+                </div>
+              <% else %>
+                <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                  <div class="text-center text-muted">
+                    <i class="fas fa-chart-pie fa-3x mb-3"></i>
+                    <h6><%= t('.no_expenses_found') %></h6>
+                    <p><%= t('.add_expenses_message') %></p>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expenseModal">
+                      <i class="fas fa-plus-circle"></i> <%= t('.add_first_expense') %>
+                    </button>
+                  </div>
+                </div>
+              <% end %>
             </div>
-          <% else %>
-            <div class="flex-grow-1 d-flex align-items-center justify-content-center">
-              <div class="text-center text-muted">
-                <i class="fas fa-chart-pie fa-3x mb-3"></i>
-                <h6><%= t('.no_expenses_found') %></h6>
-                <p><%= t('.add_expenses_message') %></p>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expenseModal">
-                  <i class="fas fa-plus-circle"></i> <%= t('.add_first_expense') %>
-                </button>
-              </div>
-            </div>
-          <% end %>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="col-md-6 d-flex">
-      <div class="card flex-fill">
-        <div class="card-header">
-          <h5><i class="fas fa-list"></i> <%= t('.expense_details_by_category') %></h5>
-        </div>
-        <div class="card-body d-flex flex-column" style="min-height: 500px;">
-          <% if @expenses_by_category.any? %>
-            <div class="flex-grow-1">
-              <div class="table-responsive">
-                <table class="table table-sm">
-                  <thead>
-                    <tr>
-                      <th>Categoria</th>
-                      <th class="text-end">Valor</th>
-                      <th class="text-end">%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% @expenses_by_category.each do |expense_data| %>
-                      <tr>
-                        <td><strong><%= expense_data[:category] %></strong></td>
-                        <td class="text-end">R$ <%= number_with_delimiter(expense_data[:amount], delimiter: '.', separator: ',') %></td>
-                        <td class="text-end"><span class="badge bg-primary"><%= expense_data[:percentage] %>%</span></td>
-                      </tr>
-                    <% end %>
-                  </tbody>
-                </table>
-              </div>
+        <div class="col-md-6 d-flex">
+          <div class="card flex-fill">
+            <div class="card-header">
+              <h5><i class="fas fa-list"></i> <%= t('.expense_details_by_category') %></h5>
             </div>
-            <div class="mt-auto">
-              <hr>
-              <div class="text-center">
-                <small class="text-muted">
-                  <i class="fas fa-info-circle"></i>
-                  <%= t('.total_expenses') %>: <strong>R$ <%= number_with_delimiter(@current_month_expenses, delimiter: '.', separator: ',') %></strong>
-                </small>
-              </div>
+            <div class="card-body d-flex flex-column" style="min-height: 500px;">
+              <% if @expenses_by_category.any? %>
+                <div class="flex-grow-1">
+                  <div class="table-responsive">
+                    <table class="table table-sm">
+                      <thead>
+                        <tr>
+                          <th>Categoria</th>
+                          <th class="text-end">Valor</th>
+                          <th class="text-end">%</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% @expenses_by_category.each do |expense_data| %>
+                          <tr>
+                            <td><strong><%= expense_data[:category] %></strong></td>
+                            <td class="text-end">R$ <%= number_with_delimiter(expense_data[:amount], delimiter: '.', separator: ',') %></td>
+                            <td class="text-end"><span class="badge bg-primary"><%= expense_data[:percentage] %>%</span></td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="mt-auto">
+                  <hr>
+                  <div class="text-center">
+                    <small class="text-muted">
+                      <i class="fas fa-info-circle"></i>
+                      <%= t('.total_expenses') %>: <strong>R$ <%= number_with_delimiter(@current_month_expenses, delimiter: '.', separator: ',') %></strong>
+                    </small>
+                  </div>
+                </div>
+              <% else %>
+                <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                  <div class="text-center text-muted">
+                    <i class="fas fa-chart-pie fa-3x mb-3"></i>
+                    <h6><%= t('.no_expenses_found') %></h6>
+                    <p><%= t('.add_expenses_message') %></p>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expenseModal">
+                      <i class="fas fa-plus-circle"></i> <%= t('.add_first_expense') %>
+                    </button>
+                  </div>
+                </div>
+              <% end %>
             </div>
-          <% else %>
-            <div class="flex-grow-1 d-flex align-items-center justify-content-center">
-              <div class="text-center text-muted">
-                <i class="fas fa-chart-pie fa-3x mb-3"></i>
-                <h6><%= t('.no_expenses_found') %></h6>
-                <p><%= t('.add_expenses_message') %></p>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expenseModal">
-                  <i class="fas fa-plus-circle"></i> <%= t('.add_first_expense') %>
-                </button>
-              </div>
-            </div>
-          <% end %>
+          </div>
         </div>
       </div>
     </div>

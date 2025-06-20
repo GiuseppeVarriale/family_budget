@@ -1,0 +1,40 @@
+<% if @upcoming_expenses.any? %>
+  <div class="list-group list-group-flush">
+    <% @upcoming_expenses.each do |transaction| %>
+      <%= link_to transaction_path(transaction), class: "list-group-item list-group-item-action transaction-item upcoming px-0 py-2", style: "text-decoration: none;" do %>
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="flex-grow-1 me-2">
+            <h6 class="mb-1 small text-truncate" title="<%= transaction.description %>">
+              <%= transaction.description %>
+            </h6>
+            <small class="text-muted d-block">
+              <i class="fas fa-tag"></i> <%= transaction.category.name %>
+            </small>
+            <small class="text-info">
+              <i class="fas fa-calendar-alt"></i>
+              <% transaction_date = transaction.transaction_date.is_a?(Date) ? transaction.transaction_date : transaction.transaction_date.to_date %>
+              <%= l(transaction_date, format: :widget) %>
+              <% if transaction_date == Date.current %>
+                (hoje)
+              <% elsif transaction_date > Date.current %>
+                (em <%= time_ago_in_words(transaction.transaction_date) %>)
+              <% end %>
+            </small>
+          </div>
+          <div class="text-end">
+            <span class="badge bg-info">
+              R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- Paginação -->
+  <%= render 'dashboard/widget_pagination',
+      collection: @upcoming_expenses,
+      total_count: @upcoming_expenses_total_count %>
+<% else %>
+  <p class="text-muted text-center small mb-0">Nenhuma despesa encontrada para os próximos 15 dias.</p>
+<% end %>
