@@ -175,7 +175,7 @@ RSpec.describe TransactionsController, type: :controller do
 
       it 'updates the amount and sets is_approximate to false' do
         patch :complete_value, params: { id: approximate_transaction.id, transaction: { amount: 150.0 } }
-        
+
         approximate_transaction.reload
         expect(approximate_transaction.amount).to eq(150.0)
         expect(approximate_transaction.is_approximate).to be_falsey
@@ -183,7 +183,7 @@ RSpec.describe TransactionsController, type: :controller do
 
       it 'redirects to transactions index with success message' do
         patch :complete_value, params: { id: approximate_transaction.id, transaction: { amount: 150.0 } }
-        
+
         expect(response).to redirect_to(transactions_path)
         expect(flash[:notice]).to eq('Valor da transação atualizado com sucesso!')
       end
@@ -194,7 +194,7 @@ RSpec.describe TransactionsController, type: :controller do
 
       it 'redirects with error message' do
         patch :complete_value, params: { id: exact_transaction.id, transaction: { amount: 150.0 } }
-        
+
         expect(response).to redirect_to(transactions_path)
         expect(flash[:alert]).to eq('Esta transação já possui valor definido.')
       end
@@ -202,7 +202,7 @@ RSpec.describe TransactionsController, type: :controller do
       it 'does not update the transaction' do
         original_amount = exact_transaction.amount
         patch :complete_value, params: { id: exact_transaction.id, transaction: { amount: 150.0 } }
-        
+
         exact_transaction.reload
         expect(exact_transaction.amount).to eq(original_amount)
         expect(exact_transaction.is_approximate).to be_falsey
@@ -214,7 +214,7 @@ RSpec.describe TransactionsController, type: :controller do
 
       it 'redirects with error message' do
         patch :complete_value, params: { id: approximate_transaction.id, transaction: { amount: -50.0 } }
-        
+
         expect(response).to redirect_to(transactions_path)
         expect(flash[:alert]).to include('Erro ao atualizar valor:')
       end
@@ -223,12 +223,11 @@ RSpec.describe TransactionsController, type: :controller do
 
   describe 'PATCH #mark_as_paid' do
     context 'when transaction can be paid' do
-      let(:pending_transaction) { create(:transaction, family: family, category: category, status: :pending) }
+      let!(:pending_transaction) { create(:transaction, family: user.family, status: :pending) }
 
-      it 'updates the status to paid' do
-        expect {
-          patch :mark_as_paid, params: { id: pending_transaction.id }
-        }.to change { pending_transaction.reload.status }.from('pending').to('paid')
+      it 'marks the transaction as paid' do
+        patch :mark_as_paid, params: { id: pending_transaction.id }
+        expect(pending_transaction.reload.status).to eq('paid')
       end
 
       it 'redirects to transactions index with success message' do
@@ -239,12 +238,12 @@ RSpec.describe TransactionsController, type: :controller do
     end
 
     context 'when transaction cannot be paid' do
-      let(:paid_transaction) { create(:transaction, family: family, category: category, status: :paid) }
+      let!(:paid_transaction) { create(:transaction, family: user.family, status: :paid) }
 
       it 'does not update the transaction' do
-        expect {
-          patch :mark_as_paid, params: { id: paid_transaction.id }
-        }.not_to change(paid_transaction, :status)
+        original_status = paid_transaction.status
+        patch :mark_as_paid, params: { id: paid_transaction.id }
+        expect(paid_transaction.reload.status).to eq(original_status)
       end
 
       it 'redirects with error message' do

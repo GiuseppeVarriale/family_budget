@@ -3,6 +3,7 @@ $color-function-deprecation-warnings: false;
 @import "bootstrap";
 @import "home";
 @import "dashboard_widgets";
+@import "transactions";
 
 
 .form-label.required:after {

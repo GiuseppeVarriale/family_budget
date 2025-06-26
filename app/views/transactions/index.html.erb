@@ -14,7 +14,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="table-responsive">
-          <table class="table table-striped table-hover">
+          <table class="table table-striped table-hover transactions-table">
             <thead class="table-dark">
               <tr>
                 <th>Data</th>
@@ -28,19 +28,19 @@
             </thead>
             <tbody>
               <% @transactions.each do |transaction| %>
-                <tr>
-                  <td style="vertical-align: middle;"><%= l transaction.transaction_date.to_date %></td>
-                  <td style="vertical-align: middle;"><%= transaction.description %></td>
-                  <td style="vertical-align: middle;"><%= transaction.category.name %></td>
-                  <td style="vertical-align: middle;">
+                <tr class="transaction-table-row">
+                  <td><%= l transaction.transaction_date.to_date %></td>
+                  <td><%= transaction.description %></td>
+                  <td><%= transaction.category.name %></td>
+                  <td>
                     <span class="badge <%= transaction.income? ? 'bg-success' : 'bg-danger' %>">
                       <%= transaction.transaction_type.text %>
                     </span>
                   </td>
-                  <td class="<%= transaction.income? ? 'text-success' : 'text-danger' %>" style="vertical-align: middle;">
+                  <td class="<%= transaction.income? ? 'text-success' : 'text-danger' %>">
                     <%= transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
                   </td>
-                  <td style="vertical-align: middle;">
+                  <td>
                     <span class="badge bg-<%= transaction.paid? ? 'success' : transaction.pending? ? 'warning' : 'secondary' %>">
                       <%= transaction.status.text %>
                     </span>
@@ -49,52 +49,38 @@
                       <small><span class="badge bg-info">Valor Aproximado</span></small>
                     <% end %>
                   </td>
-                  <td style="vertical-align: middle;">
-                    <div class="btn-group btn-group-sm">
+                  <td>
+                    <div class="btn-group">
                       <% if transaction.is_approximate %>
                         <%= link_to 'Ajustar Valor', '#',
-                                    class: 'btn btn-sm',
-                                    style: 'min-width: 100px; height: 31px; display: flex; align-items: center; justify-content: center; padding: 0.25rem 0.5rem; white-space: nowrap; background: linear-gradient(180deg, #ffc107 0%, #e0a800 100%); border-color: #e0a800; color: #212529; border: 1px solid #e0a800; transition: all 0.15s ease-in-out;',
-                                    onmouseover: 'this.style.background="linear-gradient(180deg, #e0a800 0%, #d39e00 100%)"; this.style.borderColor="#d39e00"; this.style.transform="translateY(-1px)"; this.style.boxShadow="0 4px 8px rgba(224, 168, 0, 0.25)";',
-                                    onmouseout: 'this.style.background="linear-gradient(180deg, #ffc107 0%, #e0a800 100%)"; this.style.borderColor="#e0a800"; this.style.transform="translateY(0)"; this.style.boxShadow="none";',
-                                    onmousedown: 'this.style.background="linear-gradient(180deg, #d39e00 0%, #b8860b 100%)"; this.style.borderColor="#b8860b"; this.style.transform="translateY(1px)";',
-                                    onmouseup: 'this.style.background="linear-gradient(180deg, #e0a800 0%, #d39e00 100%)"; this.style.borderColor="#d39e00"; this.style.transform="translateY(-1px)";',
+                                    class: 'btn btn-warning btn-adjust-value',
                                     data: {
                                       bs_toggle: 'modal',
                                       bs_target: "#completeValueModal#{transaction.id}"
                                     } %>
                       <% elsif transaction.pending? %>
                         <%= link_to 'Marcar como Pago', '#',
-                                    class: 'btn btn-success btn-sm',
-                                    style: 'min-width: 100px; height: 31px; display: flex; align-items: center; justify-content: center; padding: 0.25rem 0.5rem; white-space: nowrap;',
+                                    class: 'btn btn-success btn-mark-paid',
                                     data: {
                                       bs_toggle: 'modal',
                                       bs_target: "#markAsPaidModal#{transaction.id}"
                                     } %>
                       <% else %>
                         <%= link_to 'Ver', transaction,
-                                    class: 'btn btn-primary btn-sm',
-                                    style: 'min-width: 100px; height: 31px; display: flex; align-items: center; justify-content: center; padding: 0.25rem 0.5rem; white-space: nowrap;' %>
+                                    class: 'btn btn-primary btn-view' %>
                       <% end %>
                       <% if transaction.is_approximate %>
-                        <button type="button" class="btn btn-sm dropdown-toggle dropdown-toggle-split"
-                                style="height: 31px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #ffc107 0%, #e0a800 100%); border-color: #e0a800; color: #212529; border: 1px solid #e0a800; transition: all 0.15s ease-in-out;"
-                                onmouseover="this.style.background='linear-gradient(180deg, #e0a800 0%, #d39e00 100%)'; this.style.borderColor='#d39e00'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(224, 168, 0, 0.25)';"
-                                onmouseout="this.style.background='linear-gradient(180deg, #ffc107 0%, #e0a800 100%)'; this.style.borderColor='#e0a800'; this.style.transform='translateY(0)'; this.style.boxShadow='none';"
-                                onmousedown="this.style.background='linear-gradient(180deg, #d39e00 0%, #b8860b 100%)'; this.style.borderColor='#b8860b'; this.style.transform='translateY(1px)';"
-                                onmouseup="this.style.background='linear-gradient(180deg, #e0a800 0%, #d39e00 100%)'; this.style.borderColor='#d39e00'; this.style.transform='translateY(-1px)';"
+                        <button type="button" class="btn btn-warning btn-warning-split dropdown-toggle dropdown-toggle-split"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                           <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
                       <% elsif transaction.pending? %>
-                        <button type="button" class="btn btn-success btn-sm dropdown-toggle dropdown-toggle-split"
-                                style="height: 31px; display: flex; align-items: center; justify-content: center;"
+                        <button type="button" class="btn btn-success btn-success-split dropdown-toggle dropdown-toggle-split"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                           <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
                       <% else %>
-                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
-                                style="height: 31px; display: flex; align-items: center; justify-content: center;"
+                        <button type="button" class="btn btn-primary btn-primary-split dropdown-toggle dropdown-toggle-split"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                           <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
