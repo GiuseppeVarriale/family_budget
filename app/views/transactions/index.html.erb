@@ -29,7 +29,7 @@
             <tbody>
               <% @transactions.each do |transaction| %>
                 <tr>
-                  <td><%= l transaction.transaction_date, format: :short %></td>
+                  <td><%= l transaction.transaction_date.to_date %></td>
                   <td><%= transaction.description %></td>
                   <td><%= transaction.category.name %></td>
                   <td>
@@ -44,18 +44,67 @@
                     <span class="badge bg-<%= transaction.paid? ? 'success' : transaction.pending? ? 'warning' : 'secondary' %>">
                       <%= transaction.status.text %>
                     </span>
+                    <% if transaction.is_approximate %>
+                      <br>
+                      <small><span class="badge bg-info">Valor Aproximado</span></small>
+                    <% end %>
                   </td>
                   <td>
-                    <div class="btn-group btn-group-sm" role="group">
-                      <%= link_to 'Ver', transaction, class: 'btn btn-outline-primary btn-sm' %>
-                      <%= link_to 'Editar', edit_transaction_path(transaction), class: 'btn btn-outline-secondary btn-sm' %>
-                      <%= link_to 'Excluir', transaction, method: :delete,
-                                  class: 'btn btn-outline-danger btn-sm',
-                                  confirm: 'Tem certeza que deseja excluir esta transação?',
-                                  data: { turbo_method: :delete } %>
+                    <div class="btn-group btn-group-sm">
+                      <%= link_to 'Visualizar', transaction, class: 'btn btn-primary btn-sm' %>
+                      <button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><%= link_to 'Editar', edit_transaction_path(transaction), class: 'dropdown-item' %></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><%= link_to 'Excluir', '#', 
+                                        class: 'dropdown-item text-danger',
+                                        data: { 
+                                          bs_toggle: 'modal', 
+                                          bs_target: "#deleteModal#{transaction.id}",
+                                          transaction_id: transaction.id,
+                                          transaction_description: transaction.description
+                                        } %></li>
+                      </ul>
                     </div>
                   </td>
                 </tr>
+
+                <!-- Modal de Confirmação de Exclusão -->
+                <div class="modal fade" id="deleteModal<%= transaction.id %>" tabindex="-1" aria-labelledby="deleteModalLabel<%= transaction.id %>" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel<%= transaction.id %>">Confirmar Exclusão</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Tem certeza que deseja excluir a transação:</p>
+                        <strong><%= transaction.description %></strong>
+                        <br>
+                        <small class="text-muted">
+                          Valor: <%= transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
+                          <br>
+                          Data: <%= l transaction.transaction_date.to_date %>
+                        </small>
+                        <br><br>
+                        <div class="alert alert-warning">
+                          <i class="bi bi-exclamation-triangle"></i>
+                          Esta ação não pode ser desfeita!
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <%= link_to 'Excluir Transação', transaction, 
+                                    method: :delete,
+                                    class: 'btn btn-danger',
+                                    data: { turbo_method: :delete } %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               <% end %>
             </tbody>
           </table>
