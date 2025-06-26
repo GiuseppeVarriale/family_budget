@@ -180,34 +180,34 @@
                         <div class="btn-group">
                           <% if transaction.is_approximate %>
                             <%= link_to 'Ajustar Valor', '#',
-                                        class: 'btn btn-warning btn-adjust-value',
+                                        class: 'btn btn-warning transactions-btn-adjust-value',
                                         data: {
                                           bs_toggle: 'modal',
                                           bs_target: "#completeValueModal#{transaction.id}"
                                         } %>
                           <% elsif transaction.pending? %>
                             <%= link_to 'Marcar como Pago', '#',
-                                        class: 'btn btn-success btn-mark-paid',
+                                        class: 'btn btn-success transactions-btn-mark-paid',
                                         data: {
                                           bs_toggle: 'modal',
                                           bs_target: "#markAsPaidModal#{transaction.id}"
                                         } %>
                           <% else %>
                             <%= link_to 'Ver', transaction,
-                                        class: 'btn btn-primary btn-view' %>
+                                        class: 'btn btn-primary transactions-btn-view' %>
                           <% end %>
                           <% if transaction.is_approximate %>
-                            <button type="button" class="btn btn-warning btn-warning-split dropdown-toggle dropdown-toggle-split"
+                            <button type="button" class="btn btn-warning transactions-btn-warning-split dropdown-toggle dropdown-toggle-split"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                               <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
                           <% elsif transaction.pending? %>
-                            <button type="button" class="btn btn-success btn-success-split dropdown-toggle dropdown-toggle-split"
+                            <button type="button" class="btn btn-success transactions-btn-success-split dropdown-toggle dropdown-toggle-split"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                               <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
                           <% else %>
-                            <button type="button" class="btn btn-primary btn-primary-split dropdown-toggle dropdown-toggle-split"
+                            <button type="button" class="btn btn-primary transactions-btn-primary-split dropdown-toggle dropdown-toggle-split"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                               <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
