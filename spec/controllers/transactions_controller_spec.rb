@@ -169,6 +169,58 @@ RSpec.describe TransactionsController, type: :controller do
     end
   end
 
+  describe 'PATCH #complete_value' do
+    context 'when transaction is approximate' do
+      let(:approximate_transaction) { create(:transaction, family: family, category: category, is_approximate: true, amount: 100.0) }
+
+      it 'updates the amount and sets is_approximate to false' do
+        patch :complete_value, params: { id: approximate_transaction.id, transaction: { amount: 150.0 } }
+        
+        approximate_transaction.reload
+        expect(approximate_transaction.amount).to eq(150.0)
+        expect(approximate_transaction.is_approximate).to be_falsey
+      end
+
+      it 'redirects to transactions index with success message' do
+        patch :complete_value, params: { id: approximate_transaction.id, transaction: { amount: 150.0 } }
+        
+        expect(response).to redirect_to(transactions_path)
+        expect(flash[:notice]).to eq('Valor da transação atualizado com sucesso!')
+      end
+    end
+
+    context 'when transaction is not approximate' do
+      let(:exact_transaction) { create(:transaction, family: family, category: category, is_approximate: false) }
+
+      it 'redirects with error message' do
+        patch :complete_value, params: { id: exact_transaction.id, transaction: { amount: 150.0 } }
+        
+        expect(response).to redirect_to(transactions_path)
+        expect(flash[:alert]).to eq('Esta transação já possui valor definido.')
+      end
+
+      it 'does not update the transaction' do
+        original_amount = exact_transaction.amount
+        patch :complete_value, params: { id: exact_transaction.id, transaction: { amount: 150.0 } }
+        
+        exact_transaction.reload
+        expect(exact_transaction.amount).to eq(original_amount)
+        expect(exact_transaction.is_approximate).to be_falsey
+      end
+    end
+
+    context 'with invalid amount' do
+      let(:approximate_transaction) { create(:transaction, family: family, category: category, is_approximate: true) }
+
+      it 'redirects with error message' do
+        patch :complete_value, params: { id: approximate_transaction.id, transaction: { amount: -50.0 } }
+        
+        expect(response).to redirect_to(transactions_path)
+        expect(flash[:alert]).to include('Erro ao atualizar valor:')
+      end
+    end
+  end
+
   describe 'when user is not authenticated' do
     before do
       sign_out user

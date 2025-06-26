@@ -2,27 +2,13 @@
 class TransactionsController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_user_has_family
-  before_action :set_transaction, only: %i[show edit update destroy]
+  before_action :set_transaction, only: %i[show edit update destroy complete_value]
 
   def index
-    @transactions = current_user.family.transactions
-                                .includes(:category)
-
-    # Apply filters based on params
-    @transactions = @transactions.where(status: params[:status]) if params[:status].present?
-    @transactions = @transactions.where(transaction_type: params[:transaction_type]) if params[:transaction_type].present?
-
-    # Special filters for dashboard widgets
-    if params[:overdue] == 'true'
-      @transactions = @transactions.where('transaction_date < ?', Date.current)
-    elsif params[:upcoming].present?
-      days = params[:upcoming].to_i
-      end_date = Date.current + days.days
-      @transactions = @transactions.where(transaction_date: Date.current..end_date)
-    end
-
-    @transactions = @transactions.order(transaction_date: :desc)
-                                 .limit(50)
+    @transactions = current_user.family.transactions.includes(:category)
+    apply_filters
+    apply_special_filters
+    @transactions = @transactions.order(transaction_date: :desc).limit(50)
   end
 
   def show; end
@@ -37,12 +23,7 @@ class TransactionsController < ApplicationController
     if @transaction.save
       redirect_to dashboard_path, notice: 'Transação criada com sucesso!'
     else
-      flash.now[:alert] = "Erro ao criar transação: #{@transaction.errors.full_messages.join(', ')}"
-      @current_month_income = current_user.family.transactions.income.current_month.sum(:amount)
-      @current_month_expenses = current_user.family.transactions.expense.current_month.sum(:amount)
-      @current_month_balance = @current_month_income - @current_month_expenses
-
-      render 'dashboard/index', status: :unprocessable_entity
+      handle_create_error
     end
   end
 
@@ -61,10 +42,62 @@ class TransactionsController < ApplicationController
     redirect_to transactions_url, notice: 'Transação excluída com sucesso!'
   end
 
+  def complete_value
+    unless @transaction.is_approximate
+      redirect_to transactions_path, alert: 'Esta transação já possui valor definido.'
+      return
+    end
+
+    if @transaction.update(complete_value_params.merge(is_approximate: false))
+      redirect_to transactions_path, notice: 'Valor da transação atualizado com sucesso!'
+    else
+      redirect_to transactions_path, alert: "Erro ao atualizar valor: #{@transaction.errors.full_messages.join(', ')}"
+    end
+  end
+
   private
 
   def set_transaction
     @transaction = current_user.family.transactions.find(params[:id])
+  end
+
+  def apply_filters
+    return unless params[:status].present? || params[:transaction_type].present?
+
+    @transactions = @transactions.where(status: params[:status]) if params[:status].present?
+    apply_transaction_type_filter if params[:transaction_type].present?
+  end
+
+  def apply_transaction_type_filter
+    @transactions = @transactions.where(transaction_type: params[:transaction_type])
+  end
+
+  def apply_special_filters
+    return unless params[:overdue] == 'true' || params[:upcoming].present?
+
+    if params[:overdue] == 'true'
+      @transactions = @transactions.where('transaction_date < ?', Date.current)
+    elsif params[:upcoming].present?
+      apply_upcoming_filter
+    end
+  end
+
+  def apply_upcoming_filter
+    days = params[:upcoming].to_i
+    end_date = Date.current + days.days
+    @transactions = @transactions.where(transaction_date: Date.current..end_date)
+  end
+
+  def handle_create_error
+    flash.now[:alert] = "Erro ao criar transação: #{@transaction.errors.full_messages.join(', ')}"
+    set_dashboard_variables
+    render 'dashboard/index', status: :unprocessable_entity
+  end
+
+  def set_dashboard_variables
+    @current_month_income = current_user.family.transactions.income.current_month.sum(:amount)
+    @current_month_expenses = current_user.family.transactions.expense.current_month.sum(:amount)
+    @current_month_balance = @current_month_income - @current_month_expenses
   end
 
   def transaction_params
@@ -73,5 +106,9 @@ class TransactionsController < ApplicationController
       :status, :is_recurring, :recurring_frequency, :is_approximate,
       :transaction_type
     )
+  end
+
+  def complete_value_params
+    params.require(:transaction).permit(:amount)
   end
 end

@@ -29,18 +29,18 @@
             <tbody>
               <% @transactions.each do |transaction| %>
                 <tr>
-                  <td><%= l transaction.transaction_date.to_date %></td>
-                  <td><%= transaction.description %></td>
-                  <td><%= transaction.category.name %></td>
-                  <td>
+                  <td style="vertical-align: middle;"><%= l transaction.transaction_date.to_date %></td>
+                  <td style="vertical-align: middle;"><%= transaction.description %></td>
+                  <td style="vertical-align: middle;"><%= transaction.category.name %></td>
+                  <td style="vertical-align: middle;">
                     <span class="badge <%= transaction.income? ? 'bg-success' : 'bg-danger' %>">
                       <%= transaction.transaction_type.text %>
                     </span>
                   </td>
-                  <td class="<%= transaction.income? ? 'text-success' : 'text-danger' %>">
+                  <td class="<%= transaction.income? ? 'text-success' : 'text-danger' %>" style="vertical-align: middle;">
                     <%= transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
                   </td>
-                  <td>
+                  <td style="vertical-align: middle;">
                     <span class="badge bg-<%= transaction.paid? ? 'success' : transaction.pending? ? 'warning' : 'secondary' %>">
                       <%= transaction.status.text %>
                     </span>
@@ -49,19 +49,55 @@
                       <small><span class="badge bg-info">Valor Aproximado</span></small>
                     <% end %>
                   </td>
-                  <td>
+                  <td style="vertical-align: middle;">
                     <div class="btn-group btn-group-sm">
-                      <%= link_to 'Visualizar', transaction, class: 'btn btn-primary btn-sm' %>
-                      <button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="visually-hidden">Toggle Dropdown</span>
-                      </button>
+                      <% if transaction.is_approximate %>
+                        <%= link_to 'Ajustar Valor', '#',
+                                    class: 'btn btn-sm',
+                                    style: 'width: 100px; height: 31px; display: flex; align-items: center; justify-content: center; padding: 0.25rem 0.5rem; white-space: nowrap; background: linear-gradient(180deg, #ffc107 0%, #e0a800 100%); border-color: #e0a800; color: #212529; border: 1px solid #e0a800; transition: all 0.15s ease-in-out;',
+                                    onmouseover: 'this.style.background="linear-gradient(180deg, #e0a800 0%, #d39e00 100%)"; this.style.borderColor="#d39e00"; this.style.transform="translateY(-1px)"; this.style.boxShadow="0 4px 8px rgba(224, 168, 0, 0.25)";',
+                                    onmouseout: 'this.style.background="linear-gradient(180deg, #ffc107 0%, #e0a800 100%)"; this.style.borderColor="#e0a800"; this.style.transform="translateY(0)"; this.style.boxShadow="none";',
+                                    onmousedown: 'this.style.background="linear-gradient(180deg, #d39e00 0%, #b8860b 100%)"; this.style.borderColor="#b8860b"; this.style.transform="translateY(1px)";',
+                                    onmouseup: 'this.style.background="linear-gradient(180deg, #e0a800 0%, #d39e00 100%)"; this.style.borderColor="#d39e00"; this.style.transform="translateY(-1px)";',
+                                    data: {
+                                      bs_toggle: 'modal',
+                                      bs_target: "#completeValueModal#{transaction.id}"
+                                    } %>
+                      <% else %>
+                        <%= link_to 'Ver', transaction,
+                                    class: 'btn btn-primary btn-sm',
+                                    style: 'width: 100px; height: 31px; display: flex; align-items: center; justify-content: center; padding: 0.25rem 0.5rem; white-space: nowrap;' %>
+                      <% end %>
+                      <% if transaction.is_approximate %>
+                        <button type="button" class="btn btn-sm dropdown-toggle dropdown-toggle-split"
+                                style="height: 31px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #ffc107 0%, #e0a800 100%); border-color: #e0a800; color: #212529; border: 1px solid #e0a800; transition: all 0.15s ease-in-out;"
+                                onmouseover="this.style.background='linear-gradient(180deg, #e0a800 0%, #d39e00 100%)'; this.style.borderColor='#d39e00'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(224, 168, 0, 0.25)';"
+                                onmouseout="this.style.background='linear-gradient(180deg, #ffc107 0%, #e0a800 100%)'; this.style.borderColor='#e0a800'; this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+                                onmousedown="this.style.background='linear-gradient(180deg, #d39e00 0%, #b8860b 100%)'; this.style.borderColor='#b8860b'; this.style.transform='translateY(1px)';"
+                                onmouseup="this.style.background='linear-gradient(180deg, #e0a800 0%, #d39e00 100%)'; this.style.borderColor='#d39e00'; this.style.transform='translateY(-1px)';"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                          <span class="visually-hidden">Toggle Dropdown</span>
+                        </button>
+                      <% else %>
+                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
+                                style="height: 31px; display: flex; align-items: center; justify-content: center;"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                          <span class="visually-hidden">Toggle Dropdown</span>
+                        </button>
+                      <% end %>
                       <ul class="dropdown-menu">
-                        <li><%= link_to 'Editar', edit_transaction_path(transaction), class: 'dropdown-item' %></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><%= link_to 'Excluir', '#', 
+                        <% unless transaction.is_approximate %>
+                          <li><%= link_to 'Editar', edit_transaction_path(transaction), class: 'dropdown-item' %></li>
+                          <li><hr class="dropdown-divider"></li>
+                        <% else %>
+                          <li><%= link_to 'Visualizar', transaction, class: 'dropdown-item' %></li>
+                          <li><%= link_to 'Editar', edit_transaction_path(transaction), class: 'dropdown-item' %></li>
+                          <li><hr class="dropdown-divider"></li>
+                        <% end %>
+                        <li><%= link_to 'Excluir', '#',
                                         class: 'dropdown-item text-danger',
-                                        data: { 
-                                          bs_toggle: 'modal', 
+                                        data: {
+                                          bs_toggle: 'modal',
                                           bs_target: "#deleteModal#{transaction.id}",
                                           transaction_id: transaction.id,
                                           transaction_description: transaction.description
@@ -96,7 +132,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <%= link_to 'Excluir Transação', transaction, 
+                        <%= link_to 'Excluir Transação', transaction,
                                     method: :delete,
                                     class: 'btn btn-danger',
                                     data: { turbo_method: :delete } %>
@@ -104,6 +140,57 @@
                     </div>
                   </div>
                 </div>
+
+                <!-- Modal para Complementar Valor Aproximado -->
+                <% if transaction.is_approximate %>
+                  <div class="modal fade" id="completeValueModal<%= transaction.id %>" tabindex="-1" aria-labelledby="completeValueModalLabel<%= transaction.id %>" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="completeValueModalLabel<%= transaction.id %>">Ajustar Valor Valor</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <%= form_with model: transaction, url: complete_value_transaction_path(transaction), method: :patch, local: true do |form| %>
+                          <div class="modal-body">
+                            <div class="alert alert-info">
+                              <i class="bi bi-info-circle"></i>
+                              Esta transação possui um valor aproximado. Defina o valor final para completar a transação.
+                            </div>
+
+                            <div class="mb-3">
+                              <label class="form-label"><strong>Transação:</strong></label>
+                              <p class="mb-1"><%= transaction.description %></p>
+                              <small class="text-muted">Data: <%= l transaction.transaction_date.to_date %></small>
+                            </div>
+
+                            <div class="mb-3">
+                              <label class="form-label"><strong>Valor Atual (Aproximado):</strong></label>
+                              <p class="text-<%= transaction.income? ? 'success' : 'danger' %>">
+                                <%= transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
+                              </p>
+                            </div>
+
+                            <div class="mb-3">
+                              <%= form.label :amount, "Novo Valor:", class: "form-label" %>
+                              <%= form.number_field :amount,
+                                      value: transaction.amount,
+                                      step: 0.01,
+                                      min: 0.01,
+                                      class: "form-control",
+                                      required: true,
+                                      placeholder: "0,00" %>
+                              <div class="form-text">Digite o valor final da transação</div>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <%= form.submit 'Confirmar Valor', class: 'btn btn-success' %>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
 
               <% end %>
             </tbody>
