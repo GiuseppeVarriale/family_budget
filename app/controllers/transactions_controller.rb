@@ -7,8 +7,8 @@ class TransactionsController < ApplicationController
   def index
     @transactions = current_user.family.transactions.includes(:category)
     apply_filters
-    apply_special_filters
-    @transactions = @transactions.order(transaction_date: :desc).limit(50)
+    calculate_filter_summary
+    @transactions = @transactions.order(transaction_date: :desc).paginate(page: params[:page], per_page: 10)
     setup_filter_options
   end
 
@@ -86,6 +86,14 @@ class TransactionsController < ApplicationController
     apply_transaction_type_filter if filter_params[:transaction_type].present?
   end
 
+  def calculate_filter_summary
+    filtered_transactions = @transactions
+    @summary_income = filtered_transactions.income.sum(:amount)
+    @summary_expenses = filtered_transactions.expense.sum(:amount)
+    @summary_balance = @summary_income - @summary_expenses
+    @total_transactions = filtered_transactions.count
+  end
+
   def apply_status_filter
     @transactions = @transactions.where(status: filter_params[:status])
   end
@@ -105,22 +113,6 @@ class TransactionsController < ApplicationController
     start_date = Date.new(year, month, 1)
     end_date = start_date.end_of_month
     @transactions = @transactions.where(transaction_date: start_date..end_date)
-  end
-
-  def apply_special_filters
-    return unless params[:overdue] == 'true' || params[:upcoming].present?
-
-    if params[:overdue] == 'true'
-      @transactions = @transactions.where('transaction_date < ?', Date.current)
-    elsif params[:upcoming].present?
-      apply_upcoming_filter
-    end
-  end
-
-  def apply_upcoming_filter
-    days = params[:upcoming].to_i
-    end_date = Date.current + days.days
-    @transactions = @transactions.where(transaction_date: Date.current..end_date)
   end
 
   def handle_create_error

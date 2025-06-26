@@ -10,12 +10,14 @@
     </div>
   </div>
 
-  <!-- Filtros -->
   <div class="row mb-4">
-    <div class="col-md-12">
-      <div class="card filters-card">
+    <div class="col-lg-8 col-md-12 mb-3 mb-lg-0">
+      <div class="card filters-card h-100">
         <div class="card-header">
-          <h5 class="mb-0">Filtros</h5>
+          <h5 class="mb-0">
+            <i class="bi bi-funnel me-2"></i>
+            Filtros
+          </h5>
         </div>
         <div class="card-body">
           <%= form_with url: transactions_path, method: :get, local: true, class: 'row g-3' do |form| %>
@@ -46,10 +48,71 @@
         </div>
       </div>
     </div>
+
+    <div class="col-lg-4 col-md-12">
+      <div class="card summary-card h-100">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="bi bi-graph-up me-2"></i>
+            Resumo
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="summary-item mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h6 class="text-muted mb-0">
+                <i class="bi bi-arrow-down-circle text-success me-1"></i>
+                Receitas
+              </h6>
+              <h5 class="text-success mb-0">
+                <%= number_to_currency(@summary_income || 0) %>
+              </h5>
+            </div>
+          </div>
+
+          <div class="summary-item mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h6 class="text-muted mb-0">
+                <i class="bi bi-arrow-up-circle text-danger me-1"></i>
+                Despesas
+              </h6>
+              <h5 class="text-danger mb-0">
+                <%= number_to_currency(@summary_expenses || 0) %>
+              </h5>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="summary-item mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h6 class="text-muted mb-0">
+                <i class="bi bi-wallet2 me-1"></i>
+                <strong>Saldo</strong>
+              </h6>
+              <h4 class="<%= (@summary_balance || 0) >= 0 ? 'text-success' : 'text-danger' %> mb-0">
+                <%= number_to_currency(@summary_balance || 0) %>
+              </h4>
+            </div>
+          </div>
+
+          <div class="summary-item">
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">
+                <i class="bi bi-list-ul me-1"></i>
+                Total de transações
+              </small>
+              <span class="badge bg-primary">
+                <%= @total_transactions || 0 %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <% if @transactions.any? %>
-    <!-- Informação sobre filtros ativos -->
     <% if params[:month_year].present? || params[:status].present? || params[:transaction_type].present? %>
       <div class="row mb-3">
         <div class="col-md-12">
@@ -75,240 +138,258 @@
 
     <div class="row">
       <div class="col-md-12">
-        <div class="table-responsive">
-          <table class="table table-striped table-hover transactions-table">
-            <thead class="table-dark">
-              <tr>
-                <th>Data</th>
-                <th>Descrição</th>
-                <th>Categoria</th>
-                <th>Tipo</th>
-                <th>Valor</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @transactions.each do |transaction| %>
-                <tr class="transaction-table-row">
-                  <td><%= l transaction.transaction_date.to_date %></td>
-                  <td><%= transaction.description %></td>
-                  <td><%= transaction.category.name %></td>
-                  <td>
-                    <span class="badge <%= transaction.income? ? 'bg-success' : 'bg-danger' %>">
-                      <%= transaction.transaction_type.text %>
-                    </span>
-                  </td>
-                  <td class="<%= transaction.income? ? 'text-success' : 'text-danger' %>">
-                    <%= transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
-                  </td>
-                  <td>
-                    <span class="badge bg-<%= transaction.paid? ? 'success' : transaction.pending? ? 'warning' : 'secondary' %>">
-                      <%= transaction.status.text %>
-                    </span>
-                    <% if transaction.is_approximate %>
-                      <br>
-                      <small><span class="badge bg-info">Valor Aproximado</span></small>
-                    <% end %>
-                  </td>
-                  <td>
-                    <div class="btn-group">
-                      <% if transaction.is_approximate %>
-                        <%= link_to 'Ajustar Valor', '#',
-                                    class: 'btn btn-warning btn-adjust-value',
-                                    data: {
-                                      bs_toggle: 'modal',
-                                      bs_target: "#completeValueModal#{transaction.id}"
-                                    } %>
-                      <% elsif transaction.pending? %>
-                        <%= link_to 'Marcar como Pago', '#',
-                                    class: 'btn btn-success btn-mark-paid',
-                                    data: {
-                                      bs_toggle: 'modal',
-                                      bs_target: "#markAsPaidModal#{transaction.id}"
-                                    } %>
-                      <% else %>
-                        <%= link_to 'Ver', transaction,
-                                    class: 'btn btn-primary btn-view' %>
-                      <% end %>
-                      <% if transaction.is_approximate %>
-                        <button type="button" class="btn btn-warning btn-warning-split dropdown-toggle dropdown-toggle-split"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                          <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                      <% elsif transaction.pending? %>
-                        <button type="button" class="btn btn-success btn-success-split dropdown-toggle dropdown-toggle-split"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                          <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                      <% else %>
-                        <button type="button" class="btn btn-primary btn-primary-split dropdown-toggle dropdown-toggle-split"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                          <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                      <% end %>
-                      <ul class="dropdown-menu">
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover transactions-table mb-0">
+                <thead class="table-dark">
+                  <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Tipo</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @transactions.each do |transaction| %>
+                    <tr class="transaction-table-row">
+                      <td><%= l transaction.transaction_date.to_date %></td>
+                      <td><%= transaction.description %></td>
+                      <td><%= transaction.category.name %></td>
+                      <td>
+                        <span class="badge <%= transaction.income? ? 'bg-success' : 'bg-danger' %>">
+                          <%= transaction.transaction_type.text %>
+                        </span>
+                      </td>
+                      <td class="<%= transaction.income? ? 'text-success' : 'text-danger' %>">
+                        <%= transaction.income? ? '+' : '-' %><%= number_to_currency(transaction.amount) %>
+                      </td>
+                      <td>
+                        <span class="badge bg-<%= transaction.paid? ? 'success' : transaction.pending? ? 'warning' : 'secondary' %>">
+                          <%= transaction.status.text %>
+                        </span>
                         <% if transaction.is_approximate %>
-                          <li><%= link_to 'Visualizar', transaction, class: 'dropdown-item' %></li>
-                          <li><%= link_to 'Editar', edit_transaction_path(transaction), class: 'dropdown-item' %></li>
-                          <li><hr class="dropdown-divider"></li>
-                        <% elsif transaction.pending? %>
-                          <li><%= link_to 'Visualizar', transaction, class: 'dropdown-item' %></li>
-                          <li><%= link_to 'Editar', edit_transaction_path(transaction), class: 'dropdown-item' %></li>
-                          <li><hr class="dropdown-divider"></li>
-                        <% else %>
-                          <li><%= link_to 'Editar', edit_transaction_path(transaction), class: 'dropdown-item' %></li>
-                          <li><hr class="dropdown-divider"></li>
+                          <br>
+                          <small><span class="badge bg-info">Valor Aproximado</span></small>
                         <% end %>
-                        <li><%= link_to 'Excluir', '#',
-                                        class: 'dropdown-item text-danger',
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <% if transaction.is_approximate %>
+                            <%= link_to 'Ajustar Valor', '#',
+                                        class: 'btn btn-warning btn-adjust-value',
                                         data: {
                                           bs_toggle: 'modal',
-                                          bs_target: "#deleteModal#{transaction.id}",
-                                          transaction_id: transaction.id,
-                                          transaction_description: transaction.description
-                                        } %></li>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- Modal de Confirmação de Exclusão -->
-                <div class="modal fade" id="deleteModal<%= transaction.id %>" tabindex="-1" aria-labelledby="deleteModalLabel<%= transaction.id %>" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel<%= transaction.id %>">Confirmar Exclusão</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <p>Tem certeza que deseja excluir a transação:</p>
-                        <strong><%= transaction.description %></strong>
-                        <br>
-                        <small class="text-muted">
-                          Valor: <%= transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
-                          <br>
-                          Data: <%= l transaction.transaction_date.to_date %>
-                        </small>
-                        <br><br>
-                        <div class="alert alert-warning">
-                          <i class="bi bi-exclamation-triangle"></i>
-                          Esta ação não pode ser desfeita!
+                                          bs_target: "#completeValueModal#{transaction.id}"
+                                        } %>
+                          <% elsif transaction.pending? %>
+                            <%= link_to 'Marcar como Pago', '#',
+                                        class: 'btn btn-success btn-mark-paid',
+                                        data: {
+                                          bs_toggle: 'modal',
+                                          bs_target: "#markAsPaidModal#{transaction.id}"
+                                        } %>
+                          <% else %>
+                            <%= link_to 'Ver', transaction,
+                                        class: 'btn btn-primary btn-view' %>
+                          <% end %>
+                          <% if transaction.is_approximate %>
+                            <button type="button" class="btn btn-warning btn-warning-split dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                              <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                          <% elsif transaction.pending? %>
+                            <button type="button" class="btn btn-success btn-success-split dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                              <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                          <% else %>
+                            <button type="button" class="btn btn-primary btn-primary-split dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                              <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                          <% end %>
+                          <ul class="dropdown-menu">
+                            <% if transaction.is_approximate %>
+                              <li><%= link_to 'Visualizar', transaction, class: 'dropdown-item' %></li>
+                              <li><%= link_to 'Editar', edit_transaction_path(transaction), class: 'dropdown-item' %></li>
+                              <li><hr class="dropdown-divider"></li>
+                            <% elsif transaction.pending? %>
+                              <li><%= link_to 'Visualizar', transaction, class: 'dropdown-item' %></li>
+                              <li><%= link_to 'Editar', edit_transaction_path(transaction), class: 'dropdown-item' %></li>
+                              <li><hr class="dropdown-divider"></li>
+                            <% else %>
+                              <li><%= link_to 'Editar', edit_transaction_path(transaction), class: 'dropdown-item' %></li>
+                              <li><hr class="dropdown-divider"></li>
+                            <% end %>
+                            <li><%= link_to 'Excluir', '#',
+                                            class: 'dropdown-item text-danger',
+                                            data: {
+                                              bs_toggle: 'modal',
+                                              bs_target: "#deleteModal#{transaction.id}",
+                                              transaction_id: transaction.id,
+                                              transaction_description: transaction.description
+                                            } %></li>
+                          </ul>
                         </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <%= link_to 'Excluir Transação', transaction,
-                                    method: :delete,
-                                    class: 'btn btn-danger',
-                                    data: { turbo_method: :delete } %>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-                <!-- Modal para Complementar Valor Aproximado -->
-                <% if transaction.is_approximate %>
-                  <div class="modal fade" id="completeValueModal<%= transaction.id %>" tabindex="-1" aria-labelledby="completeValueModalLabel<%= transaction.id %>" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="completeValueModalLabel<%= transaction.id %>">Ajustar Valor Valor</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <%= form_with model: transaction, url: complete_value_transaction_path(transaction), method: :patch, local: true do |form| %>
-                          <div class="modal-body">
-                            <div class="alert alert-info">
-                              <i class="bi bi-info-circle"></i>
-                              Esta transação possui um valor aproximado. Defina o valor final para completar a transação.
-                            </div>
-
-                            <div class="mb-3">
-                              <label class="form-label"><strong>Transação:</strong></label>
-                              <p class="mb-1"><%= transaction.description %></p>
-                              <small class="text-muted">Data: <%= l transaction.transaction_date.to_date %></small>
-                            </div>
-
-                            <div class="mb-3">
-                              <label class="form-label"><strong>Valor Atual (Aproximado):</strong></label>
-                              <p class="text-<%= transaction.income? ? 'success' : 'danger' %>">
-                                <%= transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
-                              </p>
-                            </div>
-
-                            <div class="mb-3">
-                              <%= form.label :amount, "Novo Valor:", class: "form-label" %>
-                              <%= form.number_field :amount,
-                                      value: transaction.amount,
-                                      step: 0.01,
-                                      min: 0.01,
-                                      class: "form-control",
-                                      required: true,
-                                      placeholder: "0,00" %>
-                              <div class="form-text">Digite o valor final da transação</div>
-                            </div>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <%= form.submit 'Confirmar Valor', class: 'btn btn-success' %>
-                          </div>
-                        <% end %>
-                      </div>
-                    </div>
-                  </div>
-                <% end %>
-
-                <!-- Modal para Marcar como Pago -->
-                <% if transaction.pending? && !transaction.is_approximate %>
-                  <div class="modal fade" id="markAsPaidModal<%= transaction.id %>" tabindex="-1" aria-labelledby="markAsPaidModalLabel<%= transaction.id %>" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="markAsPaidModalLabel<%= transaction.id %>">Confirmar Pagamento</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <div class="alert alert-success">
-                            <i class="bi bi-check-circle"></i>
-                            Confirmar que esta transação foi paga?
-                          </div>
-
-                          <div class="mb-3">
-                            <label class="form-label"><strong>Transação:</strong></label>
-                            <p class="mb-1"><%= transaction.description %></p>
-                            <small class="text-muted">Data: <%= l transaction.transaction_date.to_date %></small>
-                          </div>
-
-                          <div class="mb-3">
-                            <label class="form-label"><strong>Valor:</strong></label>
-                            <p class="text-<%= transaction.income? ? 'success' : 'danger' %>">
-                              <%= transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
-                            </p>
-                          </div>
-
-                          <div class="alert alert-info">
-                            <i class="bi bi-info-circle"></i>
-                            Após confirmar, o status da transação será alterado para "Pago".
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                          <%= link_to 'Confirmar Pagamento', mark_as_paid_transaction_path(transaction),
-                                      method: :patch,
-                                      class: 'btn btn-success',
-                                      data: { turbo_method: :patch } %>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                <% end %>
-
-              <% end %>
-            </tbody>
-          </table>
+          <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">
+                Mostrando <%= @transactions.offset + 1 %>-<%= @transactions.offset + @transactions.length %>
+                de <%= @transactions.total_entries %> transações
+              </small>
+              <%= will_paginate @transactions,
+                  param_name: :page,
+                  inner_window: 2,
+                  outer_window: 0,
+                  previous_label: '‹ Anterior',
+                  next_label: 'Próxima ›',
+                  class: 'pagination pagination-sm mb-0' %>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+    <% @transactions.each do |transaction| %>
+      <div class="modal fade" id="deleteModal<%= transaction.id %>" tabindex="-1" aria-labelledby="deleteModalLabel<%= transaction.id %>" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel<%= transaction.id %>">Confirmar Exclusão</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Tem certeza que deseja excluir a transação:</p>
+              <strong><%= transaction.description %></strong>
+              <br>
+              <small class="text-muted">
+                Valor: <%= transaction.income? ? '+' : '-' %><%= number_to_currency(transaction.amount) %>
+                <br>
+                Data: <%= l transaction.transaction_date.to_date %>
+              </small>
+              <br><br>
+              <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                Esta ação não pode ser desfeita!
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <%= link_to 'Excluir Transação', transaction,
+                          method: :delete,
+                          class: 'btn btn-danger',
+                          data: { turbo_method: :delete } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <% if transaction.is_approximate %>
+        <div class="modal fade" id="completeValueModal<%= transaction.id %>" tabindex="-1" aria-labelledby="completeValueModalLabel<%= transaction.id %>" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="completeValueModalLabel<%= transaction.id %>">Ajustar Valor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <%= form_with model: transaction, url: complete_value_transaction_path(transaction), method: :patch, local: true do |form| %>
+                <div class="modal-body">
+                  <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Esta transação possui um valor aproximado. Defina o valor final para completar a transação.
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label"><strong>Transação:</strong></label>
+                    <p class="mb-1"><%= transaction.description %></p>
+                    <small class="text-muted">Data: <%= l transaction.transaction_date.to_date %></small>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label"><strong>Valor Atual (Aproximado):</strong></label>
+                    <p class="text-<%= transaction.income? ? 'success' : 'danger' %>">
+                      <%= transaction.income? ? '+' : '-' %><%= number_to_currency(transaction.amount) %>
+                    </p>
+                  </div>
+
+                  <div class="mb-3">
+                    <%= form.label :amount, "Novo Valor:", class: "form-label" %>
+                    <%= form.number_field :amount,
+                            value: transaction.amount,
+                            step: 0.01,
+                            min: 0.01,
+                            class: "form-control",
+                            required: true,
+                            placeholder: "0,00" %>
+                    <div class="form-text">Digite o valor final da transação</div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <%= form.submit 'Confirmar Valor', class: 'btn btn-success' %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <% if transaction.pending? && !transaction.is_approximate %>
+        <div class="modal fade" id="markAsPaidModal<%= transaction.id %>" tabindex="-1" aria-labelledby="markAsPaidModalLabel<%= transaction.id %>" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="markAsPaidModalLabel<%= transaction.id %>">Confirmar Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="alert alert-success">
+                  <i class="bi bi-check-circle"></i>
+                  Confirmar que esta transação foi paga?
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label"><strong>Transação:</strong></label>
+                  <p class="mb-1"><%= transaction.description %></p>
+                  <small class="text-muted">Data: <%= l transaction.transaction_date.to_date %></small>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label"><strong>Valor:</strong></label>
+                  <p class="text-<%= transaction.income? ? 'success' : 'danger' %>">
+                    <%= transaction.income? ? '+' : '-' %><%= number_to_currency(transaction.amount) %>
+                  </p>
+                </div>
+
+                <div class="alert alert-info">
+                  <i class="bi bi-info-circle"></i>
+                  Após confirmar, o status da transação será alterado para "Pago".
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <%= link_to 'Confirmar Pagamento', mark_as_paid_transaction_path(transaction),
+                            method: :patch,
+                            class: 'btn btn-success',
+                            data: { turbo_method: :patch } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
   <% else %>
     <div class="row">
       <div class="col-md-12">
