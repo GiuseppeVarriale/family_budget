@@ -24,10 +24,10 @@
     <div class="col-md-6">
       <div class="mb-3">
         <%= form.label :amount, "Valor (R$)", class: "form-label" %>
-        <%= form.number_field :amount, 
+        <%= form.number_field :amount,
             value: is_edit && transaction.amount ? ("%.2f" % transaction.amount) : "",
-            step: 0.01, 
-            min: 0, 
+            step: 0.01,
+            min: 0,
             class: "form-control",
             placeholder: "Ex: 100,00" %>
       </div>
