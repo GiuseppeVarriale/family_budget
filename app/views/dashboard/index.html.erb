@@ -21,7 +21,7 @@
               <i class="fas fa-arrow-up"></i> <%= t('.current_month_income') %>
             </div>
             <div class="card-body">
-              <h4 class="card-title">R$ <%= number_with_delimiter(@current_month_income, delimiter: '.', separator: ',') %></h4>
+              <h4 class="card-title"><%= number_to_currency(@current_month_income) %></h4>
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@
               <i class="fas fa-arrow-down"></i> <%= t('.current_month_expenses') %>
             </div>
             <div class="card-body">
-              <h4 class="card-title">R$ <%= number_with_delimiter(@current_month_expenses, delimiter: '.', separator: ',') %></h4>
+              <h4 class="card-title"><%= number_to_currency(@current_month_expenses) %></h4>
             </div>
           </div>
         </div>
@@ -43,7 +43,7 @@
               <i class="fas fa-balance-scale"></i> <%= t('.current_month_balance') %>
             </div>
             <div class="card-body">
-              <h4 class="card-title">R$ <%= number_with_delimiter(@current_month_balance, delimiter: '.', separator: ',') %></h4>
+              <h4 class="card-title"><%= number_to_currency(@current_month_balance) %></h4>
             </div>
           </div>
         </div>
@@ -145,7 +145,7 @@
                         <% @expenses_by_category.each do |expense_data| %>
                           <tr>
                             <td><strong><%= expense_data[:category] %></strong></td>
-                            <td class="text-end">R$ <%= number_with_delimiter(expense_data[:amount], delimiter: '.', separator: ',') %></td>
+                            <td class="text-end"><%= number_to_currency(expense_data[:amount]) %></td>
                             <td class="text-end"><span class="badge bg-primary"><%= expense_data[:percentage] %>%</span></td>
                           </tr>
                         <% end %>
@@ -158,7 +158,7 @@
                   <div class="text-center">
                     <small class="text-muted">
                       <i class="fas fa-info-circle"></i>
-                      <%= t('.total_expenses') %>: <strong>R$ <%= number_with_delimiter(@current_month_expenses, delimiter: '.', separator: ',') %></strong>
+                      <%= t('.total_expenses') %>: <strong><%= number_to_currency(@current_month_expenses) %></strong>
                     </small>
                   </div>
                 </div>

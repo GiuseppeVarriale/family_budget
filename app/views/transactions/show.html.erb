@@ -17,7 +17,7 @@
                 <dt class="col-sm-4">Valor:</dt>
                 <dd class="col-sm-8">
                   <span class="h5 <%= @transaction.income? ? 'text-success' : 'text-danger' %>">
-                    <%= @transaction.income? ? '+' : '-' %>R$ <%= number_with_delimiter(@transaction.amount, delimiter: '.', separator: ',') %>
+                    <%= @transaction.income? ? '+' : '-' %><%= number_to_currency(@transaction.amount) %>
                   </span>
                 </dd>
               </dl>
