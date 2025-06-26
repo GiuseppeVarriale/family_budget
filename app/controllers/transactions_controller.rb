@@ -2,7 +2,7 @@
 class TransactionsController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_user_has_family
-  before_action :set_transaction, only: %i[show edit update destroy complete_value]
+  before_action :set_transaction, only: %i[show edit update destroy complete_value mark_as_paid]
 
   def index
     @transactions = current_user.family.transactions.includes(:category)
@@ -52,6 +52,19 @@ class TransactionsController < ApplicationController
       redirect_to transactions_path, notice: 'Valor da transação atualizado com sucesso!'
     else
       redirect_to transactions_path, alert: "Erro ao atualizar valor: #{@transaction.errors.full_messages.join(', ')}"
+    end
+  end
+
+  def mark_as_paid
+    unless @transaction.can_be_paid?
+      redirect_to transactions_path, alert: 'Esta transação não pode ser marcada como paga.'
+      return
+    end
+
+    if @transaction.mark_as_paid!
+      redirect_to transactions_path, notice: 'Transação marcada como paga com sucesso!'
+    else
+      redirect_to transactions_path, alert: "Erro ao marcar como paga: #{@transaction.errors.full_messages.join(', ')}"
     end
   end
 

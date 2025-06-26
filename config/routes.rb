@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :transactions do
     member do
       patch :complete_value
+      patch :mark_as_paid
     end
   end
 

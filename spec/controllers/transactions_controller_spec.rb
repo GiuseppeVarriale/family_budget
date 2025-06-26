@@ -221,6 +221,40 @@ RSpec.describe TransactionsController, type: :controller do
     end
   end
 
+  describe 'PATCH #mark_as_paid' do
+    context 'when transaction can be paid' do
+      let(:pending_transaction) { create(:transaction, family: family, category: category, status: :pending) }
+
+      it 'updates the status to paid' do
+        expect {
+          patch :mark_as_paid, params: { id: pending_transaction.id }
+        }.to change { pending_transaction.reload.status }.from('pending').to('paid')
+      end
+
+      it 'redirects to transactions index with success message' do
+        patch :mark_as_paid, params: { id: pending_transaction.id }
+        expect(response).to redirect_to(transactions_path)
+        expect(flash[:notice]).to eq('Transação marcada como paga com sucesso!')
+      end
+    end
+
+    context 'when transaction cannot be paid' do
+      let(:paid_transaction) { create(:transaction, family: family, category: category, status: :paid) }
+
+      it 'does not update the transaction' do
+        expect {
+          patch :mark_as_paid, params: { id: paid_transaction.id }
+        }.not_to change(paid_transaction, :status)
+      end
+
+      it 'redirects with error message' do
+        patch :mark_as_paid, params: { id: paid_transaction.id }
+        expect(response).to redirect_to(transactions_path)
+        expect(flash[:alert]).to eq('Esta transação não pode ser marcada como paga.')
+      end
+    end
+  end
+
   describe 'when user is not authenticated' do
     before do
       sign_out user
