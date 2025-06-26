@@ -10,7 +10,69 @@
     </div>
   </div>
 
+  <!-- Filtros -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card filters-card">
+        <div class="card-header">
+          <h5 class="mb-0">Filtros</h5>
+        </div>
+        <div class="card-body">
+          <%= form_with url: transactions_path, method: :get, local: true, class: 'row g-3' do |form| %>
+            <div class="col-md-4">
+              <%= form.label :month_year, "Período (Mês/Ano)", class: "form-label" %>
+              <%= form.month_field :month_year, value: @selected_month_year, class: "form-control" %>
+            </div>
+
+            <div class="col-md-4">
+              <%= form.label :status, "Status", class: "form-label" %>
+              <%= form.select :status, options_for_select([['Todos', '']] + Transaction.status.options, params[:status]),
+                              {}, { class: "form-select" } %>
+            </div>
+
+            <div class="col-md-4">
+              <%= form.label :transaction_type, "Tipo", class: "form-label" %>
+              <%= form.select :transaction_type, options_for_select([['Todos', '']] + Transaction.transaction_type.options, params[:transaction_type]),
+                              {}, { class: "form-select" } %>
+            </div>
+
+            <div class="col-12">
+              <div class="d-flex gap-2">
+                <%= form.submit "Filtrar", class: "btn btn-primary" %>
+                <%= link_to "Limpar Filtros", transactions_path, class: "btn btn-outline-secondary" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <% if @transactions.any? %>
+    <!-- Informação sobre filtros ativos -->
+    <% if params[:month_year].present? || params[:status].present? || params[:transaction_type].present? %>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <div class="alert alert-info">
+            <strong>Filtros ativos:</strong>
+            <% if params[:month_year].present? %>
+              <% year, month = params[:month_year].split('-') %>
+              Período: <%= I18n.l(Date.new(year.to_i, month.to_i), format: '%B de %Y') %> |
+            <% else %>
+              Período: <%= I18n.l(Date.current, format: '%B de %Y') %> (atual) |
+            <% end %>
+            <% if params[:status].present? %>
+              Status: <%= Transaction.status.find_value(params[:status])&.text || params[:status] %> |
+            <% end %>
+            <% if params[:transaction_type].present? %>
+              Tipo: <%= Transaction.transaction_type.find_value(params[:transaction_type])&.text || params[:transaction_type] %> |
+            <% end %>
+            <%= link_to "Limpar todos os filtros", transactions_path, class: "btn btn-sm btn-outline-secondary ms-2" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <div class="row">
       <div class="col-md-12">
         <div class="table-responsive">
@@ -252,7 +314,7 @@
       <div class="col-md-12">
         <div class="alert alert-info text-center">
           <h4>Nenhuma transação encontrada</h4>
-          <p>Você ainda não possui transações cadastradas.</p>
+          <p>Você ainda não possui transações cadastradas neste período.</p>
           <%= link_to 'Ir para o Dashboard', dashboard_path, class: 'btn btn-primary' %>
         </div>
       </div>

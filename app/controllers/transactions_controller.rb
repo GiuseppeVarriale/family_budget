@@ -9,6 +9,7 @@ class TransactionsController < ApplicationController
     apply_filters
     apply_special_filters
     @transactions = @transactions.order(transaction_date: :desc).limit(50)
+    setup_filter_options
   end
 
   def show; end
@@ -74,15 +75,36 @@ class TransactionsController < ApplicationController
     @transaction = current_user.family.transactions.find(params[:id])
   end
 
-  def apply_filters
-    return unless params[:status].present? || params[:transaction_type].present?
+  def filter_params
+    params.permit(:month_year, :status, :transaction_type)
+  end
 
-    @transactions = @transactions.where(status: params[:status]) if params[:status].present?
-    apply_transaction_type_filter if params[:transaction_type].present?
+  def apply_filters
+    apply_date_filter
+
+    apply_status_filter if filter_params[:status].present?
+    apply_transaction_type_filter if filter_params[:transaction_type].present?
+  end
+
+  def apply_status_filter
+    @transactions = @transactions.where(status: filter_params[:status])
   end
 
   def apply_transaction_type_filter
-    @transactions = @transactions.where(transaction_type: params[:transaction_type])
+    @transactions = @transactions.where(transaction_type: filter_params[:transaction_type])
+  end
+
+  def apply_date_filter
+    if filter_params[:month_year].present?
+      year, month = filter_params[:month_year].split('-').map(&:to_i)
+    else
+      year = Date.current.year
+      month = Date.current.month
+    end
+
+    start_date = Date.new(year, month, 1)
+    end_date = start_date.end_of_month
+    @transactions = @transactions.where(transaction_date: start_date..end_date)
   end
 
   def apply_special_filters
@@ -123,5 +145,9 @@ class TransactionsController < ApplicationController
 
   def complete_value_params
     params.require(:transaction).permit(:amount)
+  end
+
+  def setup_filter_options
+    @selected_month_year = filter_params[:month_year] || Date.current.strftime('%Y-%m')
   end
 end
