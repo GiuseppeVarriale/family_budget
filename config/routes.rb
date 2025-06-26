@@ -9,7 +9,12 @@ Rails.application.routes.draw do
   get 'dashboard/load_pending_income', to: 'dashboard#load_pending_income', as: 'load_pending_income'
   get 'dashboard/load_upcoming_expenses', to: 'dashboard#load_upcoming_expenses', as: 'load_upcoming_expenses'
   get 'dashboard/load_upcoming_income', to: 'dashboard#load_upcoming_income', as: 'load_upcoming_income'
-  resources :transactions
+  resources :transactions do
+    member do
+      patch :complete_value
+      patch :mark_as_paid
+    end
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
