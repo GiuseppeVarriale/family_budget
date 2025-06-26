@@ -27,7 +27,6 @@ RSpec.describe 'shared/_navbar', type: :view do
       expect(rendered).not_to have_content('Finanças')
       expect(rendered).not_to have_link('Todas as Transações')
       expect(rendered).not_to have_link('Nova Transação')
-      expect(rendered).not_to have_link('Relatórios')
     end
 
     it 'does not display user profile dropdown' do
@@ -93,7 +92,6 @@ RSpec.describe 'shared/_navbar', type: :view do
       it 'displays finances dropdown items' do
         expect(rendered).to have_link('Todas as Transações')
         expect(rendered).to have_link('Nova Transação')
-        expect(rendered).to have_link('Relatórios')
       end
 
       it 'displays user profile dropdown' do

@@ -19,7 +19,7 @@
           </div>
           <div class="text-end">
             <span class="badge bg-danger">
-              R$ <%= number_with_delimiter(transaction.amount, delimiter: '.', separator: ',') %>
+              <%= number_to_currency(transaction.amount) %>
             </span>
           </div>
         </div>

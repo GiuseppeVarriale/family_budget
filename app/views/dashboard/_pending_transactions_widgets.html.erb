@@ -22,7 +22,7 @@
         <% if @overdue_expenses_count > 0 %>
           <div class="text-center">
             <h5 class="text-danger mb-1"><%= @overdue_expenses_count %> transaç<%= @overdue_expenses_count > 1 ? 'ões' : 'ão' %></h5>
-            <h6 class="text-muted">R$ <%= number_with_delimiter(@overdue_expenses_total, delimiter: '.', separator: ',') %></h6>
+            <h6 class="text-muted"><%= number_to_currency(@overdue_expenses_total) %></h6>
           </div>
           <div class="collapse mt-3" id="overdue-expenses-list">
             <div class="border-top pt-2">
@@ -62,7 +62,7 @@
         <% if @pending_income_count > 0 %>
           <div class="text-center">
             <h5 class="text-warning mb-1"><%= @pending_income_count %> transaç<%= @pending_income_count > 1 ? 'õe' : 'ão' %></h5>
-            <h6 class="text-muted">R$ <%= number_with_delimiter(@pending_income_total, delimiter: '.', separator: ',') %></h6>
+            <h6 class="text-muted"><%= number_to_currency(@pending_income_total) %></h6>
           </div>
           <div class="collapse mt-3" id="pending-income-list">
             <div class="border-top pt-2">
@@ -102,7 +102,7 @@
         <% if @upcoming_expenses_count > 0 %>
           <div class="text-center">
             <h5 class="text-info mb-1"><%= @upcoming_expenses_count %> transaç<%= @upcoming_expenses_count > 1 ? 'õe' : 'ão' %></h5>
-            <h6 class="text-muted">R$ <%= number_with_delimiter(@upcoming_expenses_total, delimiter: '.', separator: ',') %></h6>
+            <h6 class="text-muted"><%= number_to_currency(@upcoming_expenses_total) %></h6>
           </div>
           <div class="collapse mt-3" id="upcoming-expenses-list">
             <div class="border-top pt-2">
@@ -142,7 +142,7 @@
         <% if @upcoming_income_count > 0 %>
           <div class="text-center">
             <h5 class="text-success mb-1"><%= @upcoming_income_count %> transaç<%= @upcoming_income_count > 1 ? 'õe' : 'ão' %></h5>
-            <h6 class="text-muted">R$ <%= number_with_delimiter(@upcoming_income_total, delimiter: '.', separator: ',') %></h6>
+            <h6 class="text-muted"><%= number_to_currency(@upcoming_income_total) %></h6>
           </div>
           <div class="collapse mt-3" id="upcoming-income-list">
             <div class="border-top pt-2">

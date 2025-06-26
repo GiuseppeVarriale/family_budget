@@ -327,7 +327,7 @@
                   <div class="mb-3">
                     <%= form.label :amount, "Novo Valor:", class: "form-label" %>
                     <%= form.number_field :amount,
-                            value: transaction.amount,
+                            value: "%.2f" % transaction.amount,
                             step: 0.01,
                             min: 0.01,
                             class: "form-control",
